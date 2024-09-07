@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package saas.api.nodeid.errorv1;
+
+option go_package           = "github.com/go-micro-saas/nodeid-service/api/nodeid-service/v1/errors;errorv1";
+option java_multiple_files  = true;
+option java_package         = "saas.api.nodeid.errorv1";
+option java_outer_classname = "SaasApiNodeidErrorV1";
+
+import "errors/errors.proto";
+
+// ERROR 错误码用9位数字表示,其中前3位与服务序号保持一致,第4为使用0作为分隔占位,后5位用于表示具体错误码的枚举值
+enum ERROR {
+  option (errors.default_code) = 500;
+
+  UNKNOWN                     = 0 [(errors.code) = 500];          // 未知错误
+  S102_NO_AVAILABLE_ID        = 102000001 [(errors.code) = 400];  // 没有可用的节点ID
+  S102_RECORD_NOT_FOUNT       = 102000002 [(errors.code) = 400];  // 节点ID不存在
+  S102_RECORD_ALREADY_EXIST   = 102000003 [(errors.code) = 400];  // 节点ID已被使用
+  S102_HAS_BEEN_USED          = 102000004 [(errors.code) = 400];  // 节点ID已被使用
+  S102_NODE_ID_RENEWAL_FAILED = 102000005 [(errors.code) = 400];  // 节点ID续订失败
+  S102_NODE_ID_INCORRECT      = 102000006 [(errors.code) = 400];  // 节点ID信息不正确
+}

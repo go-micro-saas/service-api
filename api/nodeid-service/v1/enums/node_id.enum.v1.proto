@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package saas.api.nodeid.enumv1;
+
+option go_package           = "github.com/go-micro-saas/nodeid-service/api/nodeid-service/v1/enums;enumv1";
+option java_multiple_files  = true;
+option java_package         = "saas.api.nodeid.enumv1";
+option java_outer_classname = "SaasApiNodeidEnumV1";
+
+// NodeIDStatusEnum 节点状态
+message NodeIDStatusEnum {
+  enum Status {
+    UNSPECIFIED = 0;  // 未指定
+    IDLE        = 1;  // 闲置
+    USING       = 2;  // 使用中
+  }
+}
