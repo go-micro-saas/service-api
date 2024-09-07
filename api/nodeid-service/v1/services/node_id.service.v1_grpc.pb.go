@@ -8,7 +8,7 @@ package servicev1
 
 import (
 	context "context"
-	resources "github.com/go-micro-saas/nodeid-service/api/nodeid-service/v1/resources"
+	resources "github.com/go-micro-saas/service-api/api/nodeid-service/v1/resources"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"

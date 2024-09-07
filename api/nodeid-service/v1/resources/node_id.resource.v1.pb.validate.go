@@ -18,7 +18,7 @@ import (
 
 	"google.golang.org/protobuf/types/known/anypb"
 
-	enumv1 "github.com/go-micro-saas/nodeid-service/api/nodeid-service/v1/enums"
+	enumv1 "github.com/go-micro-saas/service-api/api/nodeid-service/v1/enums"
 )
 
 // ensure the imports are used

@@ -15,17 +15,7 @@
 | user-service   | 103  | 10301     | 10302     | 103000001 : UNKNOWN |
 | admin-service  | 104  | 10401     | 10402     | 104000001 : UNKNOWN |
 
-## Protobuf 配置
-
-`idea`下载`Protocol Buffers`插件，配置protobuf的路径
-
-配置protobuf路径；$GOPATH请设置为自己OS中的值
-
-```txt
-$GOPATH/src/github.com/ikaiguang/go-micro-saas/xxx-service/third_party
-```
-
-## 编译 Protobuf
+## 安装依赖
 
 请先安装必要的依赖：`make init`
 
@@ -42,16 +32,13 @@ generate               generate : go:generate
 protoc-api-protobuf    protoc :-->: generate api protobuf
 protoc-specified-api   protoc :-->: example: make protoc-specified-api service=ping-service
 protoc-ping-protobuf   protoc :-->: generate ping protobuf
-protoc-ping-v1-protobuf protoc :-->: generate ping protobuf
-protoc-testdata-protobuf protoc :-->: generate testdata protobuf
-protoc-testdata-v1-protobuf protoc :-->: generate testdata protobuf
 ```
 
-### 编译完整的服务
+### 编译`protobuf`文件
 
 ```shell
 
-# 编译完整的服务；示例如下：
+# 编译`protobuf`文件；示例如下：
 make protoc-api-protobuf
 make protoc-ping-protobuf
 make protoc-ping-v1-protobuf
