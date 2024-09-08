@@ -2,9 +2,10 @@ package pingapi
 
 import (
 	"context"
-	pingroucesv1 "github.com/go-micro-saas/service-api/api/ping-service/v1/resources"
-	pingservicev1 "github.com/go-micro-saas/service-api/api/ping-service/v1/services"
 	apiutil "github.com/go-micro-saas/service-api/util"
+	pingroucesv1 "github.com/go-micro-saas/service-kit/testdata/ping-service/api/ping-service/v1/resources"
+	pingservicev1 "github.com/go-micro-saas/service-kit/testdata/ping-service/api/ping-service/v1/services"
+	errorpkg "github.com/ikaiguang/go-srv-kit/kratos/error"
 )
 
 type PingAPI interface {
@@ -22,7 +23,7 @@ func NewPingHTTPAPI(client pingservicev1.SrvPingHTTPClient) PingAPI {
 func (s *httpAPI) Ping(ctx context.Context, req *pingroucesv1.PingReq) (*pingroucesv1.PingRespData, error) {
 	resp, err := s.client.Ping(ctx, req)
 	if err = apiutil.CheckAPIResponse(resp, err); err != nil {
-		return nil, err
+		return nil, errorpkg.FormatError(err)
 	}
 	return resp.Data, nil
 }
@@ -38,7 +39,7 @@ func NewPingGRPCAPI(client pingservicev1.SrvPingClient) PingAPI {
 func (s *grpcAPI) Ping(ctx context.Context, req *pingroucesv1.PingReq) (*pingroucesv1.PingRespData, error) {
 	resp, err := s.client.Ping(ctx, req)
 	if err = apiutil.CheckAPIResponse(resp, err); err != nil {
-		return nil, err
+		return nil, errorpkg.FormatError(err)
 	}
 	return resp.Data, nil
 }

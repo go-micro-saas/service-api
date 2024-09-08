@@ -1,8 +1,8 @@
 package pingapi
 
 import (
-	pingservicev1 "github.com/go-micro-saas/service-api/api/ping-service/v1/services"
 	clientutil "github.com/go-micro-saas/service-kit/cluster_service_api"
+	pingservicev1 "github.com/go-micro-saas/service-kit/testdata/ping-service/api/ping-service/v1/services"
 )
 
 const (

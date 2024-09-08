@@ -41,14 +41,14 @@ type SrvNodeIDV1HTTPServer interface {
 
 func RegisterSrvNodeIDV1HTTPServer(s *http.Server, srv SrvNodeIDV1HTTPServer) {
 	r := s.Route("/")
-	r.GET("/api/v1/nodeid/ping/{message}", _SrvNodeIDV1_Ping1_HTTP_Handler(srv))
+	r.GET("/api/v1/nodeid/ping/{message}", _SrvNodeIDV1_Ping0_HTTP_Handler(srv))
 	r.GET("/api/v1/nodeid/get-service-info", _SrvNodeIDV1_GetServiceInfo0_HTTP_Handler(srv))
 	r.GET("/api/v1/nodeid/get-one-node-id", _SrvNodeIDV1_GetNodeId0_HTTP_Handler(srv))
 	r.POST("/api/v1/nodeid/renewal-node-id", _SrvNodeIDV1_RenewalNodeId0_HTTP_Handler(srv))
 	r.PUT("/api/v1/nodeid/release-node-id", _SrvNodeIDV1_ReleaseNodeId0_HTTP_Handler(srv))
 }
 
-func _SrvNodeIDV1_Ping1_HTTP_Handler(srv SrvNodeIDV1HTTPServer) func(ctx http.Context) error {
+func _SrvNodeIDV1_Ping0_HTTP_Handler(srv SrvNodeIDV1HTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in resources.PingReq
 		if err := ctx.BindQuery(&in); err != nil {

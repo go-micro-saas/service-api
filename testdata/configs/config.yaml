@@ -61,6 +61,6 @@ cluster_service_api:
   - service_name: ping-service-grpc
     transport_type: grpc
     registry_type: endpoint
-    service_target: http://127.0.0.1:10102
+    service_target: grpc://127.0.0.1:10102
 
 

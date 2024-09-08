@@ -1,6 +1,7 @@
 package pingapi
 
 import (
+	"fmt"
 	launcher "github.com/go-micro-saas/service-api/testdata/launcher"
 	clientutil "github.com/go-micro-saas/service-kit/cluster_service_api"
 	setuputil "github.com/go-micro-saas/service-kit/setup"
@@ -21,6 +22,7 @@ func TestMain(m *testing.M) {
 	// testdata instance
 	testInstance, err := launcher.InitTestdataInstance(configPath)
 	if err != nil {
+		fmt.Printf("%+v\n", err)
 		panic(err)
 	}
 	launcherManager = testInstance.LauncherManager
@@ -30,10 +32,12 @@ func TestMain(m *testing.M) {
 	// client
 	httpClient, err := NewPingHTTPClient(serviceAPIManger)
 	if err != nil {
+		fmt.Printf("%+v\n", err)
 		panic(err)
 	}
 	grpcClient, err := NewPingGRPCClient(serviceAPIManger)
 	if err != nil {
+		fmt.Printf("%+v\n", err)
 		panic(err)
 	}
 	httpAPIHandler = NewPingHTTPAPI(httpClient).(*httpAPI)
