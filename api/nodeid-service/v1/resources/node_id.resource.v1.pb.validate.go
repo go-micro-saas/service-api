@@ -1074,11 +1074,7 @@ func (m *GetNodeIdRespData) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Id
-
 	// no validation rules for InstanceId
-
-	// no validation rules for InstanceName
 
 	// no validation rules for NodeId
 
@@ -1141,6 +1137,8 @@ func (m *GetNodeIdRespData) validate(all bool) error {
 			}
 		}
 	}
+
+	// no validation rules for AccessToken
 
 	if len(errors) > 0 {
 		return GetNodeIdRespDataMultiError(errors)
@@ -1244,17 +1242,6 @@ func (m *RenewalNodeIdReq) validate(all bool) error {
 
 	var errors []error
 
-	if m.GetId() <= 0 {
-		err := RenewalNodeIdReqValidationError{
-			field:  "Id",
-			reason: "value must be greater than 0",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
 	if l := utf8.RuneCountInString(m.GetInstanceId()); l < 1 || l > 255 {
 		err := RenewalNodeIdReqValidationError{
 			field:  "InstanceId",
@@ -1276,6 +1263,8 @@ func (m *RenewalNodeIdReq) validate(all bool) error {
 		}
 		errors = append(errors, err)
 	}
+
+	// no validation rules for AccessToken
 
 	if len(errors) > 0 {
 		return RenewalNodeIdReqMultiError(errors)
@@ -1649,17 +1638,6 @@ func (m *ReleaseNodeIdReq) validate(all bool) error {
 
 	var errors []error
 
-	if m.GetId() <= 0 {
-		err := ReleaseNodeIdReqValidationError{
-			field:  "Id",
-			reason: "value must be greater than 0",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
 	if l := utf8.RuneCountInString(m.GetInstanceId()); l < 1 || l > 255 {
 		err := ReleaseNodeIdReqValidationError{
 			field:  "InstanceId",
@@ -1681,6 +1659,8 @@ func (m *ReleaseNodeIdReq) validate(all bool) error {
 		}
 		errors = append(errors, err)
 	}
+
+	// no validation rules for AccessToken
 
 	if len(errors) > 0 {
 		return ReleaseNodeIdReqMultiError(errors)

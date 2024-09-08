@@ -15,7 +15,6 @@ import "validate/validate.proto";
 import "api/nodeid-service/v1/enums/node_id.enum.v1.proto";
 
 message PingReq {
-  // message
   string message = 1 [(google.api.field_behavior) = REQUIRED, (validate.rules).string = { min_len: 1 }];
 }
 
@@ -67,19 +66,18 @@ message GetNodeIdResp {
 }
 
 message GetNodeIdRespData {
-  uint64 id                                             = 1;  // ID
-  string instance_id                                    = 2;  // 实例ID
-  string instance_name                                  = 3;  // 实例名称
-  int64 node_id                                         = 4;  // 节点id
-  saas.api.nodeid.enumv1.NodeIDStatusEnum.Status status = 5;  // 节点状态
-  google.protobuf.Timestamp expired_at                  = 6;  // 失效时间；默认：now()+100s
-  google.protobuf.Duration heartbeat_interval           = 7;  // 心跳续订间隔时间；默认：30s
+  string instance_id                                    = 1;  // 实例ID
+  int64 node_id                                         = 2;  // 节点id
+  saas.api.nodeid.enumv1.NodeIDStatusEnum.Status status = 3;  // 节点状态
+  google.protobuf.Timestamp expired_at                  = 4;  // 失效时间；默认：now()+100s
+  google.protobuf.Duration heartbeat_interval           = 5;  // 心跳续订间隔时间；默认：30s
+  string access_token                                   = 6;  // 令牌；用于续订和释放ID
 }
 
 message RenewalNodeIdReq {
-  uint64 id          = 1 [(validate.rules).uint64 = { gt: 0 }];                     // ID；用于验证指定ID节点
-  string instance_id = 2 [(validate.rules).string = { min_len: 1, max_len: 255 }];  // 实例ID
-  int64 node_id      = 3 [(validate.rules).int64 = { gt: 0 }];                      // 节点id
+  string instance_id  = 1 [(validate.rules).string = { min_len: 1, max_len: 255 }];  // 实例ID
+  int64 node_id       = 2 [(validate.rules).int64 = { gt: 0 }];                      // 节点id
+  string access_token = 3;                                                           // 令牌；用于续订和释放ID
 }
 
 message RenewalNodeIdResp {
@@ -97,9 +95,9 @@ message RenewalNodeIdRespData {
 }
 
 message ReleaseNodeIdReq {
-  uint64 id          = 1 [(validate.rules).uint64 = { gt: 0 }];                     // ID；用于验证指定ID节点
-  string instance_id = 2 [(validate.rules).string = { min_len: 1, max_len: 255 }];  // 实例ID
-  int64 node_id      = 3 [(validate.rules).int64 = { gt: 0 }];                      // 节点id
+  string instance_id  = 1 [(validate.rules).string = { min_len: 1, max_len: 255 }];  // 实例ID
+  int64 node_id       = 2 [(validate.rules).int64 = { gt: 0 }];                      // 节点id
+  string access_token = 3;                                                           // 令牌；用于续订和释放ID
 }
 
 message ReleaseNodeIdResp {
