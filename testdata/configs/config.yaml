@@ -1,0 +1,66 @@
+# app 程序
+app:
+  project_name: go-micro-saas
+  server_name: testdata-service
+  # 开发环境；值：develop、testing、preview、production
+  server_env: production
+  server_version: v1.0.0
+  # ID: apputil.ID 服务唯一标识; 也用于服务注册发现
+  id: "${app.project_name}:${app.server_name}:${app.server_env}:${app.server_version}"
+  # 配置方式；值：local、consul
+  config_method: local
+  config_path_for_general: "${app.project_name}/general-config"
+  config_path_for_server: "${app.project_name}/ping-service/production/v1.0.0"
+  registry_endpoints:
+  # 服务注册，局域网地址或者集群地址
+  # - http://127.0.0.1:10101
+  # - grpc://127.0.0.1:10102
+  internal_domains:
+    - http://xxx-service.namespace.svc.cluster.local:10001
+    - grpc://xxx-service.namespace:10002
+  external_domains:
+    - http://uufff.com:10001
+    - grpc://uufff.com:10002
+  metadata:
+    id: "${app.project_name}:${app.server_name}:${app.server_env}:${app.server_version}"
+
+# log 日志
+log:
+  console:
+    enable: true
+    # level 日志级别；值：DEBUG、INFO、WARN、ERROR、FATAL
+    level: debug
+  file:
+    enable: true
+    # level 日志级别；值：DEBUG、INFO、WARN、ERROR、FATAL
+    level: DEBUG
+    dir: ./runtime/logs
+    filename: "${app.project_name}_${app.server_name}_${app.server_env}_${app.server_version}"
+    # rotate_time 轮询规则：n久(默认：86400s # 86400s = 1天)
+    # 轮询规则：默认为：RotateTime
+    rotate_time: 86400s
+    # rotate_size 轮询规则：按文件大小(默认：52428800 # 50<<20 = 50M)
+    # 轮询规则：默认为：RotateTime
+    rotate_size: 52428800
+    # storage_age 存储规则：n久(默认：30天)
+    # 存储规则：默认为：StorageAge
+    storage_age: 2592000s
+    # storage_counter 存储规则：n个(默认：10086个)
+    # 存储规则：默认为：StorageAge
+    storage_counter: 10086
+
+# cluster_service_api 项目集群客户端api
+# transport_type 传输协议：http、grpc、...；默认: HTTP
+# registry_type 注册类型：endpoint、consul、...；配置中心配置：${registry_type}；例： Bootstrap.Consul
+# service_target 服务目标：endpoint或registry，例：http://127.0.0.1:8899、discovery:///${registry_endpoint}
+cluster_service_api:
+  - service_name: ping-service-http
+    transport_type: http
+    registry_type: endpoint
+    service_target: http://127.0.0.1:10101
+  - service_name: ping-service-grpc
+    transport_type: grpc
+    registry_type: endpoint
+    service_target: http://127.0.0.1:10102
+
+

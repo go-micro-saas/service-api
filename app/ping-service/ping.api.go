@@ -15,6 +15,10 @@ type httpAPI struct {
 	client pingservicev1.SrvPingHTTPClient
 }
 
+func NewPingHTTPAPI(client pingservicev1.SrvPingHTTPClient) PingAPI {
+	return &httpAPI{client: client}
+}
+
 func (s *httpAPI) Ping(ctx context.Context, req *pingroucesv1.PingReq) (*pingroucesv1.PingRespData, error) {
 	resp, err := s.client.Ping(ctx, req)
 	if err = apiutil.CheckAPIResponse(resp, err); err != nil {
@@ -25,6 +29,10 @@ func (s *httpAPI) Ping(ctx context.Context, req *pingroucesv1.PingReq) (*pingrou
 
 type grpcAPI struct {
 	client pingservicev1.SrvPingClient
+}
+
+func NewPingGRPCAPI(client pingservicev1.SrvPingClient) PingAPI {
+	return &grpcAPI{client: client}
 }
 
 func (s *grpcAPI) Ping(ctx context.Context, req *pingroucesv1.PingReq) (*pingroucesv1.PingRespData, error) {
