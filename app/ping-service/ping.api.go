@@ -2,9 +2,9 @@ package pingapi
 
 import (
 	"context"
+	pingroucesv1 "github.com/go-micro-saas/service-api/api/ping-service/v1/resources"
+	pingservicev1 "github.com/go-micro-saas/service-api/api/ping-service/v1/services"
 	apiutil "github.com/go-micro-saas/service-api/util"
-	pingroucesv1 "github.com/go-micro-saas/service-kit/testdata/ping-service/api/ping-service/v1/resources"
-	pingservicev1 "github.com/go-micro-saas/service-kit/testdata/ping-service/api/ping-service/v1/services"
 	errorpkg "github.com/ikaiguang/go-srv-kit/kratos/error"
 )
 

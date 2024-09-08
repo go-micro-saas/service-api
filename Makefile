@@ -90,6 +90,10 @@ generate:
 include api/makefile_protoc.mk
 include api/nodeid-service/makefile_protoc.mk
 include api/nodeid-service/v1/makefile_protoc.mk
+include api/ping-service/makefile_protoc.mk
+include api/ping-service/v1/makefile_protoc.mk
+include api/testdata-service/makefile_protoc.mk
+include api/testdata-service/v1/makefile_protoc.mk
 
 # ===== include =====
 # ===== include =====

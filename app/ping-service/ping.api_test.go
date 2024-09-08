@@ -2,7 +2,7 @@ package pingapi
 
 import (
 	"context"
-	pingroucesv1 "github.com/go-micro-saas/service-kit/testdata/ping-service/api/ping-service/v1/resources"
+	pingroucesv1 "github.com/go-micro-saas/service-api/api/ping-service/v1/resources"
 	"testing"
 )
 
