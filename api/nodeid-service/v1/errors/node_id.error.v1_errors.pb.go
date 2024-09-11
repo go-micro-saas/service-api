@@ -123,3 +123,19 @@ func ErrorS102NodeIdIncorrect(format string, args ...interface{}) *errors.Error 
 	e.Metadata = map[string]string{"reason": strconv.Itoa(int(ERROR_S102_NODE_ID_INCORRECT.Number()))}
 	return e
 }
+
+// 访问令牌不正确
+func IsS102AccessTokenIncorrect(err error) bool {
+	if err == nil {
+		return false
+	}
+	e := errors.FromError(err)
+	return e.Reason == ERROR_S102_ACCESS_TOKEN_INCORRECT.String() && e.Code == 400
+}
+
+// 访问令牌不正确
+func ErrorS102AccessTokenIncorrect(format string, args ...interface{}) *errors.Error {
+	e := errors.New(400, ERROR_S102_ACCESS_TOKEN_INCORRECT.String(), fmt.Sprintf(format, args...))
+	e.Metadata = map[string]string{"reason": strconv.Itoa(int(ERROR_S102_ACCESS_TOKEN_INCORRECT.Number()))}
+	return e
+}
