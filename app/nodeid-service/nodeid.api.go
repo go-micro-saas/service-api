@@ -8,6 +8,11 @@ import (
 	nodeidservicev1 "github.com/go-micro-saas/service-api/api/nodeid-service/v1/services"
 	apiutil "github.com/go-micro-saas/service-api/util"
 	errorpkg "github.com/ikaiguang/go-srv-kit/kratos/error"
+	"time"
+)
+
+const (
+	RetryDelay = 10 * time.Millisecond
 )
 
 type NodeIDAPI interface {
@@ -20,7 +25,9 @@ type grpcAPI struct {
 }
 
 func NewNodeIDAPI(client nodeidservicev1.SrvNodeIDV1Client, opts ...Option) NodeIDAPI {
-	o := &options{}
+	o := &options{
+		retryDelay: RetryDelay,
+	}
 	for i := range opts {
 		opts[i](o)
 	}
@@ -56,7 +63,7 @@ func (s *grpcAPI) GetAndRenewalNodeID(ctx context.Context, req *nodeidresourcev1
 	return resp.Data, nil
 }
 
-func (s *grpcAPI) GetNodeIdWithTries(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (*nodeidresourcev1.GetNodeIdRespData, error) {
+func (s *grpcAPI) GetNodeIDWithTries(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (*nodeidresourcev1.GetNodeIdRespData, error) {
 	resp, err := s.client.GetNodeId(ctx, req)
 	if err != nil {
 		if s.log != nil {
@@ -66,7 +73,7 @@ func (s *grpcAPI) GetNodeIdWithTries(ctx context.Context, req *nodeidresourcev1.
 		return resp.Data, nil
 	}
 	for i := 2; i <= s.opts.tries; i++ {
-		//time.Sleep()
+		time.Sleep(s.opts.retryDelay)
 		resp, err = s.client.GetNodeId(ctx, req)
 		if err != nil {
 			if s.log != nil {

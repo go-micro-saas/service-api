@@ -2,13 +2,15 @@ package nodeidapi
 
 import (
 	"github.com/go-kratos/kratos/v2/log"
+	"time"
 )
 
 type Option func(*options)
 
 type options struct {
-	logger log.Logger
-	tries  int
+	logger     log.Logger
+	tries      int
+	retryDelay time.Duration
 }
 
 func WithLogger(logger log.Logger) Option {
@@ -23,10 +25,8 @@ func WithTries(tries int) Option {
 	}
 }
 
-//func WithRetryDelay(delay time.Duration) Option {
-//	return func(o *options) {
-//		m.delayFunc = func(tries int) time.Duration {
-//			return delay
-//		}
-//	}
-//}
+func WithRetryDelay(delay time.Duration) Option {
+	return func(o *options) {
+		o.retryDelay = delay
+	}
+}
