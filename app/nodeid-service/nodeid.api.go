@@ -45,7 +45,11 @@ func NewNodeIDAPI(client nodeidservicev1.SrvNodeIDV1Client, opts ...Option) Node
 	return &grpcAPI{opts: o, log: logHelper, client: client}
 }
 
-func (s *grpcAPI) GetAndRenewalNodeID(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (*nodeidresourcev1.GetNodeIdRespData, RenewalInterface, error) {
+func (s *grpcAPI) GetClient() interface{} {
+	return s.client
+}
+
+func (s *grpcAPI) GetAndAutoRenewalNodeID(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (*nodeidresourcev1.GetNodeIdRespData, NodeIDInterface, error) {
 	resp, err := s.GetNodeID(ctx, req)
 	if err != nil {
 		return nil, nil, err
@@ -92,7 +96,7 @@ func (s *grpcAPI) GetNodeID(ctx context.Context, req *nodeidresourcev1.GetNodeId
 	return nil, errorpkg.FormatError(err)
 }
 
-func (s *grpcAPI) RenewalNodeID(ctx context.Context, dataModel *nodeidresourcev1.GetNodeIdRespData) (RenewalInterface, error) {
+func (s *grpcAPI) RenewalNodeID(ctx context.Context, dataModel *nodeidresourcev1.GetNodeIdRespData) (NodeIDInterface, error) {
 	// token错误：ID被其他程序占用
 	var (
 		req = &nodeidresourcev1.RenewalNodeIdReq{
@@ -103,7 +107,6 @@ func (s *grpcAPI) RenewalNodeID(ctx context.Context, dataModel *nodeidresourcev1
 	)
 	var (
 		newCtx, cancel = context.WithCancel(context.Background())
-		stop           = &stopRenewal{cancel: cancel}
 		interval       = dataModel.HeartbeatInterval.AsDuration()
 	)
 	if interval <= time.Second {
@@ -139,7 +142,21 @@ func (s *grpcAPI) RenewalNodeID(ctx context.Context, dataModel *nodeidresourcev1
 			}
 		}
 	})
-	return stop, nil
+
+	// 新的 AccessToken
+	dataModel.AccessToken = req.AccessToken
+	releaseFunc := func(releaseContext context.Context) error {
+		_, err := s.ReleaseNodeId(releaseContext, dataModel)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	nodeID := &nodeIDInstance{
+		stopRenewal: cancel,
+		release:     releaseFunc,
+	}
+	return nodeID, nil
 }
 
 func (s *grpcAPI) renewalNodeID(ctx context.Context, req *nodeidresourcev1.RenewalNodeIdReq) (*nodeidresourcev1.RenewalNodeIdRespData, error) {
@@ -184,4 +201,42 @@ func (s *grpcAPI) renewalNodeID(ctx context.Context, req *nodeidresourcev1.Renew
 	//
 	//	}
 	//}
+}
+
+func (s *grpcAPI) ReleaseNodeId(ctx context.Context, dataModel *nodeidresourcev1.GetNodeIdRespData) (*nodeidresourcev1.ReleaseNodeIdRespData, error) {
+	req := &nodeidresourcev1.ReleaseNodeIdReq{
+		InstanceId:  dataModel.InstanceId,
+		NodeId:      dataModel.NodeId,
+		AccessToken: dataModel.AccessToken,
+	}
+	resp, err := s.client.ReleaseNodeId(ctx, req)
+	if e := apiutil.CheckAPIResponse(resp, err); e != nil {
+		if s.opts.tries <= 1 {
+			return nil, errorpkg.WithStack(e)
+		}
+		if s.log != nil {
+			s.log.WithContext(ctx).Warnw("msg", "ReleaseNodeId failed", "try_number", 1, "error", e)
+		}
+	} else {
+		return resp.Data, nil
+	}
+	for i := 2; i <= s.opts.tries; i++ {
+		time.Sleep(s.opts.retryDelay)
+		resp, err = s.client.ReleaseNodeId(ctx, req)
+		if e := apiutil.CheckAPIResponse(resp, err); e != nil {
+			if s.opts.tries <= i {
+				return nil, errorpkg.WithStack(e)
+			}
+			if s.log != nil {
+				s.log.WithContext(ctx).Warnw("msg", "ReleaseNodeId failed", "try_number", 1, "error", e)
+			}
+		} else {
+			return resp.Data, nil
+		}
+	}
+	if err == nil {
+		e := errorpkg.ErrorInternalServer("ReleaseNodeId failed")
+		return nil, errorpkg.WithStack(e)
+	}
+	return nil, errorpkg.FormatError(err)
 }

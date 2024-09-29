@@ -6,22 +6,34 @@ import (
 )
 
 type NodeIDAPI interface {
-	GetAndRenewalNodeID(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (*nodeidresourcev1.GetNodeIdRespData, RenewalInterface, error)
+	GetClient() interface{}
+	GetAndAutoRenewalNodeID(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (*nodeidresourcev1.GetNodeIdRespData, NodeIDInterface, error)
 	GetNodeID(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (*nodeidresourcev1.GetNodeIdRespData, error)
-	RenewalNodeID(ctx context.Context, dataModel *nodeidresourcev1.GetNodeIdRespData) (RenewalInterface, error)
+	RenewalNodeID(ctx context.Context, dataModel *nodeidresourcev1.GetNodeIdRespData) (NodeIDInterface, error)
+	ReleaseNodeId(ctx context.Context, dataModel *nodeidresourcev1.GetNodeIdRespData) (*nodeidresourcev1.ReleaseNodeIdRespData, error)
 }
 
-type RenewalInterface interface {
-	Stop() error
+type NodeIDInterface interface {
+	StopRenewal(ctx context.Context) error
+	Release(ctx context.Context) error
 }
 
-type stopRenewal struct {
-	cancel func()
+type nodeIDInstance struct {
+	stopRenewal func()
+	release     func(ctx context.Context) error
 }
 
-func (r *stopRenewal) Stop() error {
-	if r.cancel != nil {
-		r.cancel()
+func (s *nodeIDInstance) StopRenewal(_ context.Context) error {
+	if s.stopRenewal != nil {
+		s.stopRenewal()
+	}
+	return nil
+}
+
+func (s *nodeIDInstance) Release(ctx context.Context) error {
+	_ = s.StopRenewal(ctx)
+	if s.release != nil {
+		return s.release(ctx)
 	}
 	return nil
 }

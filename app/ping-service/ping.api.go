@@ -11,6 +11,7 @@ import (
 // PingAPI 仅供参考，建议在程序中直接使用 client.Ping()，然后
 // 使用 apiutil.CheckAPIResponse(resp, err) 进行错误处理
 type PingAPI interface {
+	GetClient() interface{}
 	Ping(ctx context.Context, req *pingroucesv1.PingReq) (*pingroucesv1.PingRespData, error)
 }
 
@@ -20,6 +21,10 @@ type httpAPI struct {
 
 func NewPingHTTPAPI(client pingservicev1.SrvPingHTTPClient) PingAPI {
 	return &httpAPI{client: client}
+}
+
+func (s *httpAPI) GetClient() interface{} {
+	return s.client
 }
 
 func (s *httpAPI) Ping(ctx context.Context, req *pingroucesv1.PingReq) (*pingroucesv1.PingRespData, error) {
@@ -36,6 +41,10 @@ type grpcAPI struct {
 
 func NewPingGRPCAPI(client pingservicev1.SrvPingClient) PingAPI {
 	return &grpcAPI{client: client}
+}
+
+func (s *grpcAPI) GetClient() interface{} {
+	return s.client
 }
 
 func (s *grpcAPI) Ping(ctx context.Context, req *pingroucesv1.PingReq) (*pingroucesv1.PingRespData, error) {
