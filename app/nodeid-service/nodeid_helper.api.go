@@ -43,7 +43,7 @@ func NewNodeIDHelper(client NodeIDAPI, opts ...Option) NodeIDHelper {
 	return &nodeIDHelper{opts: o, log: logHelper, client: client}
 }
 
-func (s *nodeIDHelper) GetAndAutoRenewalNodeID(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (*nodeidresourcev1.GetNodeIdRespData, error) {
+func (s *nodeIDHelper) GetAndAutoRenewalNodeID(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (*nodeidresourcev1.GetNodeIdRespData, RenewalManager, error) {
 	resp, err := s.GetNodeID(ctx, req)
 	if err != nil {
 		return nil, nil, err
@@ -94,7 +94,7 @@ func (s *nodeIDHelper) GetNodeID(ctx context.Context, req *nodeidresourcev1.GetN
 	return nil, errorpkg.FormatError(err)
 }
 
-func (s *nodeIDHelper) RenewalNodeID(ctx context.Context, dataModel *nodeidresourcev1.GetNodeIdRespData) error {
+func (s *nodeIDHelper) RenewalNodeID(ctx context.Context, dataModel *nodeidresourcev1.GetNodeIdRespData) (RenewalManager, error) {
 	// token错误：ID被其他程序占用
 	var (
 		req = &nodeidresourcev1.RenewalNodeIdReq{
@@ -105,6 +105,7 @@ func (s *nodeIDHelper) RenewalNodeID(ctx context.Context, dataModel *nodeidresou
 	)
 	var (
 		newCtx, cancel = context.WithCancel(context.Background())
+		dataChannel    = make(chan *nodeidresourcev1.RenewalNodeIdRespData)
 		interval       = dataModel.HeartbeatInterval.AsDuration()
 	)
 	if interval <= time.Second {
@@ -120,8 +121,11 @@ func (s *nodeIDHelper) RenewalNodeID(ctx context.Context, dataModel *nodeidresou
 		var (
 			ticker = time.NewTicker(interval)
 		)
-		defer ticker.Stop()
-		defer cancel()
+		defer func() {
+			ticker.Stop()
+			cancel()
+			close(dataChannel)
+		}()
 		for {
 			select {
 			case <-newCtx.Done():
@@ -135,26 +139,16 @@ func (s *nodeIDHelper) RenewalNodeID(ctx context.Context, dataModel *nodeidresou
 					}
 					break
 				}
-				//req.AccessToken = resp.AccessToken
-				_ = resp
+				dataChannel <- resp
 			}
 		}
 	})
 
-	// 新的 AccessToken
-	dataModel.AccessToken = req.AccessToken
-	releaseFunc := func(releaseContext context.Context) error {
-		_, err := s.ReleaseNodeId(releaseContext, dataModel)
-		if err != nil {
-			return err
-		}
-		return nil
+	renewalHandler := &renewalManager{
+		data: dataChannel,
+		stop: cancel,
 	}
-	nodeID := &nodeIDInstance{
-		stopRenewal: cancel,
-		release:     releaseFunc,
-	}
-	return nodeID, nil
+	return renewalHandler, nil
 }
 
 func (s *nodeIDHelper) renewalNodeID(ctx context.Context, req *nodeidresourcev1.RenewalNodeIdReq) (*nodeidresourcev1.RenewalNodeIdRespData, error) {
