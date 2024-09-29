@@ -13,12 +13,13 @@ import "errors/errors.proto";
 enum ERROR {
   option (errors.default_code) = 500;
 
-  UNKNOWN                     = 0 [(errors.code) = 500];          // 未知错误
-  S102_NO_AVAILABLE_ID        = 102000001 [(errors.code) = 400];  // 没有可用的节点ID
-  S102_RECORD_NOT_FOUNT       = 102000002 [(errors.code) = 400];  // 节点ID不存在
-  S102_RECORD_ALREADY_EXIST   = 102000003 [(errors.code) = 400];  // 节点ID已被使用
-  S102_HAS_BEEN_USED          = 102000004 [(errors.code) = 400];  // 节点ID已被使用
-  S102_NODE_ID_RENEWAL_FAILED = 102000005 [(errors.code) = 400];  // 节点ID续订失败
-  S102_NODE_ID_INCORRECT      = 102000006 [(errors.code) = 400];  // 节点ID信息不正确
-  S102_ACCESS_TOKEN_INCORRECT = 102000007 [(errors.code) = 400];  // 访问令牌不正确
+  UNKNOWN                       = 0 [(errors.code) = 500];          // 未知错误
+  S102_NO_AVAILABLE_ID          = 102000001 [(errors.code) = 400];  // 没有可用的节点ID
+  S102_RECORD_NOT_FOUNT         = 102000002 [(errors.code) = 400];  // 节点ID不存在
+  S102_RECORD_ALREADY_EXIST     = 102000003 [(errors.code) = 400];  // 节点ID已被使用
+  S102_HAS_BEEN_USED            = 102000004 [(errors.code) = 400];  // 节点ID已被使用
+  S102_NODE_ID_RENEWAL_FAILED   = 102000005 [(errors.code) = 400];  // 节点ID续订失败
+  S102_NODE_ID_INCORRECT        = 102000006 [(errors.code) = 400];  // 节点ID信息不正确
+  S102_ACCESS_TOKEN_INCORRECT   = 102000007 [(errors.code) = 400];  // 访问令牌不正确
+  S102_NODE_ID_STATUS_INCORRECT = 102000008 [(errors.code) = 400];  // 节点状态不正确
 }

@@ -9,14 +9,15 @@ import (
 
 var ERROR_http_code = map[string]int{
 
-	"UNKNOWN":                     500,
-	"S102_NO_AVAILABLE_ID":        400,
-	"S102_RECORD_NOT_FOUNT":       400,
-	"S102_RECORD_ALREADY_EXIST":   400,
-	"S102_HAS_BEEN_USED":          400,
-	"S102_NODE_ID_RENEWAL_FAILED": 400,
-	"S102_NODE_ID_INCORRECT":      400,
-	"S102_ACCESS_TOKEN_INCORRECT": 400,
+	"UNKNOWN":                       500,
+	"S102_NO_AVAILABLE_ID":          400,
+	"S102_RECORD_NOT_FOUNT":         400,
+	"S102_RECORD_ALREADY_EXIST":     400,
+	"S102_HAS_BEEN_USED":            400,
+	"S102_NODE_ID_RENEWAL_FAILED":   400,
+	"S102_NODE_ID_INCORRECT":        400,
+	"S102_ACCESS_TOKEN_INCORRECT":   400,
+	"S102_NODE_ID_STATUS_INCORRECT": 400,
 }
 
 func (x ERROR) HTTPCode() int {
@@ -79,5 +80,12 @@ func DefaultErrorS102NodeIdIncorrect() *errors.Error {
 func DefaultErrorS102AccessTokenIncorrect() *errors.Error {
 	e := errors.New(400, ERROR_S102_ACCESS_TOKEN_INCORRECT.String(), "访问令牌不正确")
 	e.Metadata = map[string]string{"reason": strconv.Itoa(int(ERROR_S102_ACCESS_TOKEN_INCORRECT.Number()))}
+	return e
+}
+
+// 节点状态不正确
+func DefaultErrorS102NodeIdStatusIncorrect() *errors.Error {
+	e := errors.New(400, ERROR_S102_NODE_ID_STATUS_INCORRECT.String(), "节点状态不正确")
+	e.Metadata = map[string]string{"reason": strconv.Itoa(int(ERROR_S102_NODE_ID_STATUS_INCORRECT.Number()))}
 	return e
 }

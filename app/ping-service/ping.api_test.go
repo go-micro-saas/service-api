@@ -8,7 +8,6 @@ import (
 
 // go test -v -count=1 ./app/ping-service -test.run=Test_Ping_Xxx
 func Test_Ping_Xxx(t *testing.T) {
-
 	type args struct {
 		handler PingAPI
 		ctx     context.Context
