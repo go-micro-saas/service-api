@@ -2,6 +2,7 @@ package nodeidapi
 
 import (
 	"fmt"
+	"github.com/go-kratos/kratos/v2/log"
 	launcher "github.com/go-micro-saas/service-api/testdata/launcher"
 	clientutil "github.com/go-micro-saas/service-kit/cluster_service_api"
 	setuputil "github.com/go-micro-saas/service-kit/setup"
@@ -14,6 +15,7 @@ var (
 	serviceAPIManger clientutil.ServiceAPIManager
 	httpAPIHandler   *httpAPI
 	grpcAPIHandler   *grpcAPI
+	nodeIDHandler    *nodeIDHelper
 )
 
 func TestMain(m *testing.M) {
@@ -42,6 +44,7 @@ func TestMain(m *testing.M) {
 	}
 	httpAPIHandler = NewHTTPApi(httpClient).(*httpAPI)
 	grpcAPIHandler = NewGRPCApi(grpcClient).(*grpcAPI)
+	nodeIDHandler = NewNodeIDHelper(grpcAPIHandler, WithLogger(log.DefaultLogger)).(*nodeIDHelper)
 
 	os.Exit(m.Run())
 }

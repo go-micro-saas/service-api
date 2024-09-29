@@ -1,10 +1,14 @@
 package apiutil
 
 import (
+	"fmt"
 	"github.com/go-kratos/kratos/v2/errors"
 	clientutil "github.com/go-micro-saas/service-kit/cluster_service_api"
+	timepkg "github.com/ikaiguang/go-srv-kit/kit/time"
 	errorpkg "github.com/ikaiguang/go-srv-kit/kratos/error"
+	threadpkg "github.com/ikaiguang/go-srv-kit/kratos/thread"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"time"
 )
 
 type Enum interface {
@@ -48,4 +52,29 @@ func CheckHTTPStatus(statusCode int) *errors.Error {
 // 请使用 if e := CheckResponseStatus(response); e != nil {return errorpkg.WithStack(err)}
 func CheckResponseStatus(resp clientutil.Response) *errors.Error {
 	return clientutil.CheckResponseStatus(resp)
+}
+
+func Sleep(duration time.Duration) {
+	var (
+		timer          = time.NewTimer(duration)
+		remaining      = duration
+		tickerDuration = time.Second
+	)
+	threadpkg.GoSafe(func() {
+		time.Sleep(duration)
+	})
+	ticker := time.NewTicker(tickerDuration)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ticker.C:
+			remaining -= tickerDuration
+			if remaining < 0 {
+				remaining = 0
+			}
+			fmt.Println("==> waiting: ", time.Now().Format(timepkg.YmdHms), " still need to wait: ", remaining)
+		case <-timer.C:
+			return
+		}
+	}
 }

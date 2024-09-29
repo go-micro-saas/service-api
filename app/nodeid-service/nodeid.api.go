@@ -3,6 +3,7 @@ package nodeidapi
 import (
 	"context"
 	nodeidresourcev1 "github.com/go-micro-saas/service-api/api/nodeid-service/v1/resources"
+	"time"
 )
 
 type NodeIDAPI interface {
@@ -24,11 +25,17 @@ type NodeID interface {
 
 type RenewalManager interface {
 	Stop(ctx context.Context) error
-	Data(ctx context.Context) <-chan *nodeidresourcev1.RenewalNodeIdRespData
+	RenewalResult(ctx context.Context) *RenewalResult
+}
+
+type RenewalResult struct {
+	Data     *nodeidresourcev1.RenewalNodeIdRespData
+	Err      error
+	LastTime time.Time
 }
 
 type renewalManager struct {
-	data <-chan *nodeidresourcev1.RenewalNodeIdRespData
+	data *RenewalResult
 	stop func()
 }
 
@@ -39,6 +46,6 @@ func (s *renewalManager) Stop(_ context.Context) error {
 	return nil
 }
 
-func (s *renewalManager) Data(_ context.Context) <-chan *nodeidresourcev1.RenewalNodeIdRespData {
+func (s *renewalManager) RenewalResult(_ context.Context) *RenewalResult {
 	return s.data
 }

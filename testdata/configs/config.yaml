@@ -62,5 +62,13 @@ cluster_service_api:
     transport_type: grpc
     registry_type: endpoint
     service_target: grpc://127.0.0.1:10102
+  - service_name: nodeid-service-http
+    transport_type: http
+    registry_type: endpoint
+    service_target: http://127.0.0.1:10201
+  - service_name: nodeid-service-grpc
+    transport_type: grpc
+    registry_type: endpoint
+    service_target: grpc://127.0.0.1:10202
 
 

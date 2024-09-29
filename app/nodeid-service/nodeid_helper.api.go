@@ -6,6 +6,7 @@ import (
 	nodeiderrorv1 "github.com/go-micro-saas/service-api/api/nodeid-service/v1/errors"
 	nodeidresourcev1 "github.com/go-micro-saas/service-api/api/nodeid-service/v1/resources"
 	errorpkg "github.com/ikaiguang/go-srv-kit/kratos/error"
+	logpkg "github.com/ikaiguang/go-srv-kit/kratos/log"
 	threadpkg "github.com/ikaiguang/go-srv-kit/kratos/thread"
 	"time"
 )
@@ -37,9 +38,10 @@ func NewNodeIDHelper(client NodeIDAPI, opts ...Option) NodeIDHelper {
 		opts[i](o)
 	}
 	var logHelper *log.Helper
-	if o.logger != nil {
-		logHelper = log.NewHelper(log.With(o.logger, "module", "nodeid-api"))
+	if o.logger == nil {
+		o.logger, _ = logpkg.NewDummyLogger()
 	}
+	logHelper = log.NewHelper(log.With(o.logger, "module", "nodeid-api"))
 	return &nodeIDHelper{opts: o, log: logHelper, client: client}
 }
 
@@ -105,8 +107,8 @@ func (s *nodeIDHelper) RenewalNodeID(ctx context.Context, dataModel *nodeidresou
 	)
 	var (
 		newCtx, cancel = context.WithCancel(context.Background())
-		dataChannel    = make(chan *nodeidresourcev1.RenewalNodeIdRespData)
 		interval       = dataModel.HeartbeatInterval.AsDuration()
+		renewalResult  = &RenewalResult{}
 	)
 	if interval <= time.Second {
 		interval = DefaultHeartbeatInterval
@@ -124,28 +126,31 @@ func (s *nodeIDHelper) RenewalNodeID(ctx context.Context, dataModel *nodeidresou
 		defer func() {
 			ticker.Stop()
 			cancel()
-			close(dataChannel)
 		}()
 		for {
 			select {
 			case <-newCtx.Done():
-				s.log.WithContext(ctx).Infow("msg", "RenewalNodeID stopped")
+				if s.log != nil {
+					s.log.WithContext(ctx).Infow("msg", "RenewalNodeID stopped")
+				}
 				return
 			case <-ticker.C:
+				renewalResult.LastTime = time.Now()
 				resp, err := s.renewalNodeID(newCtx, req)
 				if err != nil {
 					if s.log != nil {
 						s.log.WithContext(ctx).Warnw("msg", "RenewalNodeID failed", "error", err)
 					}
+					renewalResult.Err = err
 					break
 				}
-				dataChannel <- resp
+				renewalResult.Data = resp
 			}
 		}
 	})
 
 	renewalHandler := &renewalManager{
-		data: dataChannel,
+		data: renewalResult,
 		stop: cancel,
 	}
 	return renewalHandler, nil
@@ -199,6 +204,7 @@ func (s *nodeIDHelper) renewalNodeID(ctx context.Context, req *nodeidresourcev1.
 	//}
 }
 
+// ReleaseNodeId 释放节点，记得调用 RenewalManager.Stop 停止刷新节点ID
 func (s *nodeIDHelper) ReleaseNodeId(ctx context.Context, dataModel *nodeidresourcev1.GetNodeIdRespData) (*nodeidresourcev1.ReleaseNodeIdRespData, error) {
 	req := &nodeidresourcev1.ReleaseNodeIdReq{
 		InstanceId:  dataModel.InstanceId,
