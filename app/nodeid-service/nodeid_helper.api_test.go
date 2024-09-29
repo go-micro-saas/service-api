@@ -67,6 +67,7 @@ func Test_nodeIDHelper_GetAndAutoRenewalNodeID(t *testing.T) {
 			err = got1.Stop(tt.args.ctx)
 			if err != nil {
 				t.Log("==> Stop failed: ", err)
+				t.FailNow()
 			}
 			t.Log("==> waiting stop renewal: ", got.HeartbeatInterval.AsDuration())
 			apiutil.Sleep(time.Second)
