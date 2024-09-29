@@ -12,7 +12,7 @@ type httpAPI struct {
 	client pingservicev1.SrvPingHTTPClient
 }
 
-func NewPingHTTPAPI(client pingservicev1.SrvPingHTTPClient) PingAPI {
+func NewHTTPApi(client pingservicev1.SrvPingHTTPClient) PingAPI {
 	return &httpAPI{client: client}
 }
 

@@ -30,18 +30,18 @@ func TestMain(m *testing.M) {
 	defer func() { _ = launcherManager.Close() }()
 
 	// client
-	httpClient, err := NewPingHTTPClient(serviceAPIManger)
+	httpClient, err := NewHTTPClient(serviceAPIManger)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		panic(err)
 	}
-	grpcClient, err := NewPingGRPCClient(serviceAPIManger)
+	grpcClient, err := NewGRPCClient(serviceAPIManger)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		panic(err)
 	}
-	httpAPIHandler = NewPingHTTPAPI(httpClient).(*httpAPI)
-	grpcAPIHandler = NewPingGRPCAPI(grpcClient).(*grpcAPI)
+	httpAPIHandler = NewHTTPApi(httpClient).(*httpAPI)
+	grpcAPIHandler = NewGRPCApi(grpcClient).(*grpcAPI)
 
 	os.Exit(m.Run())
 }

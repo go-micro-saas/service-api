@@ -10,8 +10,8 @@ const (
 	PingServiceGRPC clientutil.ServiceName = "ping-service-grpc"
 )
 
-// NewPingGRPCClient ...
-func NewPingGRPCClient(serviceAPIManager clientutil.ServiceAPIManager, rewriteServiceName ...clientutil.ServiceName) (pingservicev1.SrvPingClient, error) {
+// NewGRPCClient ...
+func NewGRPCClient(serviceAPIManager clientutil.ServiceAPIManager, rewriteServiceName ...clientutil.ServiceName) (pingservicev1.SrvPingClient, error) {
 	serviceName := PingServiceGRPC
 	for i := range rewriteServiceName {
 		serviceName = rewriteServiceName[i]
@@ -28,8 +28,8 @@ func NewPingGRPCClient(serviceAPIManager clientutil.ServiceAPIManager, rewriteSe
 	return pingservicev1.NewSrvPingClient(grpcConn), nil
 }
 
-// NewPingHTTPClient ...
-func NewPingHTTPClient(serviceAPIManager clientutil.ServiceAPIManager, rewriteServiceName ...clientutil.ServiceName) (pingservicev1.SrvPingHTTPClient, error) {
+// NewHTTPClient ...
+func NewHTTPClient(serviceAPIManager clientutil.ServiceAPIManager, rewriteServiceName ...clientutil.ServiceName) (pingservicev1.SrvPingHTTPClient, error) {
 	serviceName := PingServiceHTTP
 	for i := range rewriteServiceName {
 		serviceName = rewriteServiceName[i]

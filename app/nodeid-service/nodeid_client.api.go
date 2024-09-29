@@ -10,8 +10,8 @@ const (
 	NodeidServiceGRPC clientutil.ServiceName = "nodeid-service-grpc"
 )
 
-// NewNodeidGRPCClient ...
-func NewNodeidGRPCClient(serviceAPIManager clientutil.ServiceAPIManager, rewriteServiceName ...clientutil.ServiceName) (nodeidservicev1.SrvNodeIDV1Client, error) {
+// NewGRPCClient ...
+func NewGRPCClient(serviceAPIManager clientutil.ServiceAPIManager, rewriteServiceName ...clientutil.ServiceName) (nodeidservicev1.SrvNodeIDV1Client, error) {
 	serviceName := NodeidServiceGRPC
 	for i := range rewriteServiceName {
 		serviceName = rewriteServiceName[i]
@@ -28,8 +28,8 @@ func NewNodeidGRPCClient(serviceAPIManager clientutil.ServiceAPIManager, rewrite
 	return nodeidservicev1.NewSrvNodeIDV1Client(grpcConn), nil
 }
 
-// NewNodeidHTTPClient ...
-func NewNodeidHTTPClient(serviceAPIManager clientutil.ServiceAPIManager, rewriteServiceName ...clientutil.ServiceName) (nodeidservicev1.SrvNodeIDV1HTTPClient, error) {
+// NewHTTPClient ...
+func NewHTTPClient(serviceAPIManager clientutil.ServiceAPIManager, rewriteServiceName ...clientutil.ServiceName) (nodeidservicev1.SrvNodeIDV1HTTPClient, error) {
 	serviceName := NodeidServiceHTTP
 	for i := range rewriteServiceName {
 		serviceName = rewriteServiceName[i]

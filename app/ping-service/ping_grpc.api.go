@@ -12,7 +12,7 @@ type grpcAPI struct {
 	client pingservicev1.SrvPingClient
 }
 
-func NewPingGRPCAPI(client pingservicev1.SrvPingClient) PingAPI {
+func NewGRPCApi(client pingservicev1.SrvPingClient) PingAPI {
 	return &grpcAPI{client: client}
 }
 
