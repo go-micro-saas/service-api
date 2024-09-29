@@ -24,8 +24,8 @@ func NewPingHTTPAPI(client pingservicev1.SrvPingHTTPClient) PingAPI {
 
 func (s *httpAPI) Ping(ctx context.Context, req *pingroucesv1.PingReq) (*pingroucesv1.PingRespData, error) {
 	resp, err := s.client.Ping(ctx, req)
-	if err = apiutil.CheckAPIResponse(resp, err); err != nil {
-		return nil, errorpkg.FormatError(err)
+	if e := apiutil.CheckAPIResponse(resp, err); e != nil {
+		return nil, errorpkg.WithStack(e)
 	}
 	return resp.Data, nil
 }
@@ -40,8 +40,8 @@ func NewPingGRPCAPI(client pingservicev1.SrvPingClient) PingAPI {
 
 func (s *grpcAPI) Ping(ctx context.Context, req *pingroucesv1.PingReq) (*pingroucesv1.PingRespData, error) {
 	resp, err := s.client.Ping(ctx, req)
-	if err = apiutil.CheckAPIResponse(resp, err); err != nil {
-		return nil, errorpkg.FormatError(err)
+	if e := apiutil.CheckAPIResponse(resp, err); e != nil {
+		return nil, errorpkg.WithStack(e)
 	}
 	return resp.Data, nil
 }

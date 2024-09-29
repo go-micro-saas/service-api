@@ -12,9 +12,9 @@ type Enum interface {
 	Number() protoreflect.EnumNumber
 }
 
-func CheckAPIResponse(response clientutil.Response, err error) error {
+func CheckAPIResponse(response clientutil.Response, err error) *errors.Error {
 	if err != nil {
-		return err
+		return errorpkg.FromError(err)
 	}
 	if e := clientutil.CheckResponseCode(response); e != nil {
 		return e
