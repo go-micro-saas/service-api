@@ -16,6 +16,7 @@ var (
 	httpAPIHandler   *httpAPI
 	grpcAPIHandler   *grpcAPI
 	nodeIDHandler    *nodeIDHelper
+	idManagerHandler *idManager
 )
 
 func TestMain(m *testing.M) {
@@ -45,6 +46,7 @@ func TestMain(m *testing.M) {
 	httpAPIHandler = NewHTTPApi(httpClient).(*httpAPI)
 	grpcAPIHandler = NewGRPCApi(grpcClient).(*grpcAPI)
 	nodeIDHandler = NewNodeIDHelper(grpcAPIHandler, WithLogger(log.DefaultLogger)).(*nodeIDHelper)
+	idManagerHandler = NewIDManager(log.DefaultLogger, nodeIDHandler).(*idManager)
 
 	os.Exit(m.Run())
 }

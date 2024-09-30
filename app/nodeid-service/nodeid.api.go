@@ -19,10 +19,6 @@ type NodeIDHelper interface {
 	ReleaseNodeId(ctx context.Context, dataModel *nodeidresourcev1.GetNodeIdRespData) (*nodeidresourcev1.ReleaseNodeIdRespData, error)
 }
 
-type NodeID interface {
-	Release(ctx context.Context) error
-}
-
 type RenewalManager interface {
 	Stop(ctx context.Context) error
 	RenewalResult(ctx context.Context) *RenewalResult
