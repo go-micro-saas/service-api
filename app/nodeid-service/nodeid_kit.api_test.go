@@ -18,7 +18,18 @@ func Test_idManager_SetNode(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{},
+		{
+			name: "#Test_idManager_SetNode",
+			args: args{
+				ctx: context.Background(),
+				req: &nodeidresourcev1.GetNodeIdReq{
+					InstanceId:   "Test_idManager_SetNode_ID",
+					InstanceName: "Test_idManager_SetNode_Name",
+					Metadata:     nil,
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
