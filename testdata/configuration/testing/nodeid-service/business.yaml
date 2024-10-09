@@ -1,0 +1,8 @@
+nodeid_service:
+  # 节点范围；最小节点默认值：1；最大节点默认值：1023；
+  min_node_id: 1
+  max_node_id: 65535
+  # 空闲释放时间；默认：100s。
+  idle_duration: 100s
+  # 心跳续订延长的时间；默认：30s。范围：[1, idle_duration]；延长有效期：now()+idle_duration
+  heartbeat_interval: 30s
