@@ -21,7 +21,13 @@ go run testdata/configuration/main.go \
   -source_dir testing/general-configs \
   -store_dir go-micro-saas/general-configs/testing
 
-# service config
+# ping-service config
+go run testdata/configuration/main.go \
+  -consul_config consul \
+  -source_dir  testing/ping-service \
+  -store_dir go-micro-saas/ping-service/testing/latest
+
+# nodeid-service config
 go run testdata/configuration/main.go \
   -consul_config consul \
   -source_dir  testing/nodeid-service \
