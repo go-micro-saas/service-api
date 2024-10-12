@@ -15,6 +15,10 @@
 | user-service   | 103  | 10301     | 10302     | 103000001 : UNKNOWN |
 | admin-service  | 104  | 10401     | 10402     | 104000001 : UNKNOWN |
 
+## testdata
+
+* [testdata/configuration](./testdata/configuration/README.md)
+
 ## 安装依赖
 
 请先安装必要的依赖：`make init`
