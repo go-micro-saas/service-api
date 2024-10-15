@@ -28,7 +28,7 @@ service SrvNodeIDV1 {
   // 获取节点id
   rpc GetNodeId(saas.api.nodeid.resourcev1.GetNodeIdReq) returns (saas.api.nodeid.resourcev1.GetNodeIdResp) {
     option (google.api.http) = {
-      get: "/api/v1/nodeid/get-one-node-id"
+      get: "/api/v1/nodeid/get-node-id"
       // body : "*"
     };
   }
