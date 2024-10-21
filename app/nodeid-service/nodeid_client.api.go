@@ -2,7 +2,7 @@ package nodeidapi
 
 import (
 	nodeidservicev1 "github.com/go-micro-saas/service-api/api/nodeid-service/v1/services"
-	clientutil "github.com/go-micro-saas/service-kit/cluster_service_api"
+	clientutil "github.com/ikaiguang/go-srv-kit/service/cluster_service_api"
 )
 
 const (

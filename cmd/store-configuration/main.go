@@ -2,10 +2,10 @@ package main
 
 import (
 	"flag"
-	apputil "github.com/go-micro-saas/service-kit/app"
-	configutil "github.com/go-micro-saas/service-kit/config"
-	consulutil "github.com/go-micro-saas/service-kit/consul"
-	storeutil "github.com/go-micro-saas/service-kit/store"
+	apputil "github.com/ikaiguang/go-srv-kit/service/app"
+	configutil "github.com/ikaiguang/go-srv-kit/service/config"
+	consulutil "github.com/ikaiguang/go-srv-kit/service/consul"
+	storeutil "github.com/ikaiguang/go-srv-kit/service/store"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"

@@ -1,8 +1,8 @@
 package launcher
 
 import (
-	clientutil "github.com/go-micro-saas/service-kit/cluster_service_api"
-	setuputil "github.com/go-micro-saas/service-kit/setup"
+	clientutil "github.com/ikaiguang/go-srv-kit/service/cluster_service_api"
+	setuputil "github.com/ikaiguang/go-srv-kit/service/setup"
 )
 
 type TestdataInstance struct {

@@ -3,8 +3,8 @@ package pingapi
 import (
 	"fmt"
 	launcher "github.com/go-micro-saas/service-api/testdata/launcher"
-	clientutil "github.com/go-micro-saas/service-kit/cluster_service_api"
-	setuputil "github.com/go-micro-saas/service-kit/setup"
+	clientutil "github.com/ikaiguang/go-srv-kit/service/cluster_service_api"
+	setuputil "github.com/ikaiguang/go-srv-kit/service/setup"
 	"os"
 	"testing"
 )

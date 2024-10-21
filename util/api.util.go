@@ -3,10 +3,10 @@ package apiutil
 import (
 	"fmt"
 	"github.com/go-kratos/kratos/v2/errors"
-	clientutil "github.com/go-micro-saas/service-kit/cluster_service_api"
 	timepkg "github.com/ikaiguang/go-srv-kit/kit/time"
 	errorpkg "github.com/ikaiguang/go-srv-kit/kratos/error"
 	threadpkg "github.com/ikaiguang/go-srv-kit/kratos/thread"
+	clientutil "github.com/ikaiguang/go-srv-kit/service/cluster_service_api"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"time"
 )
