@@ -82,7 +82,7 @@ func (s *idManager) SetSnowflakeNode(ctx context.Context, req *nodeidresourcev1.
 func (s *idManager) GetSingletonSnowflakeNode(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (idpkg.Snowflake, func(), error) {
 	s.rwMutex.RLock()
 	_, ok := s.singletonMutexMap[req.InstanceId]
-	s.rwMutex.Unlock()
+	s.rwMutex.RUnlock()
 	if !ok {
 		s.rwMutex.Lock()
 		s.singletonMutexMap[req.InstanceId] = &sync.Once{}
