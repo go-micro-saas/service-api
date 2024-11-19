@@ -9,12 +9,17 @@ import (
 	"sync"
 )
 
+func GetSingletonSnowflakeNode(ctx context.Context, idManager IDManager, req *nodeidresourcev1.GetNodeIdReq) (idpkg.Snowflake, func(), error) {
+	return idManager.GetSingletonSnowflakeNode(ctx, req)
+}
+
 func SetSnowflake(node idpkg.Snowflake) error {
 	idpkg.SetNode(node)
 	return nil
 }
 
 type IDManager interface {
+	GetSingletonSnowflakeNode(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (idpkg.Snowflake, func(), error)
 	GetSnowflakeNode(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (idpkg.Snowflake, func(), error)
 	SetSnowflakeNode(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (idpkg.Snowflake, func(), error)
 }
