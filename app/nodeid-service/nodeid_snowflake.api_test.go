@@ -33,10 +33,11 @@ func Test_idManager_SetNode(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := idManagerHandler.SetNode(tt.args.ctx, tt.args.req); (err != nil) != tt.wantErr {
+			_, cleanup, err := idManagerHandler.SetSnowflakeNode(tt.args.ctx, tt.args.req)
+			if (err != nil) != tt.wantErr {
 				t.Errorf("SetNode() error = %v, wantErr %v", err, tt.wantErr)
 			}
-			err := idManagerHandler.Release(tt.args.ctx)
+			cleanup()
 			require.Nil(t, err)
 		})
 	}

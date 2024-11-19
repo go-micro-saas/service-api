@@ -16,11 +16,37 @@ const (
 	DefaultHeartbeatInterval = 30 * time.Second
 )
 
+type Option func(*options)
+
+func WithLogger(logger log.Logger) Option {
+	return func(o *options) {
+		o.logger = logger
+	}
+}
+
+func WithTries(tries int) Option {
+	return func(o *options) {
+		o.tries = tries
+	}
+}
+
+func WithRetryDelay(delay time.Duration) Option {
+	return func(o *options) {
+		o.retryDelay = delay
+	}
+}
+
 type options struct {
 	logger            log.Logger
 	tries             int
 	retryDelay        time.Duration
 	heartbeatInterval time.Duration
+}
+
+func WithHeartbeatInterval(duration time.Duration) Option {
+	return func(o *options) {
+		o.heartbeatInterval = duration
+	}
 }
 
 type nodeIDHelper struct {
