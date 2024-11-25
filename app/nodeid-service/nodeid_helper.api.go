@@ -43,6 +43,13 @@ type options struct {
 	heartbeatInterval time.Duration
 }
 
+func (s *options) doRetryDelay() {
+	if s.retryDelay <= 0 {
+		return
+	}
+	time.Sleep(s.retryDelay)
+}
+
 func WithHeartbeatInterval(duration time.Duration) Option {
 	return func(o *options) {
 		o.heartbeatInterval = duration
@@ -100,7 +107,7 @@ func (s *nodeIDHelper) GetNodeID(ctx context.Context, req *nodeidresourcev1.GetN
 		return resp, nil
 	}
 	for i := 2; i <= s.opts.tries; i++ {
-		time.Sleep(s.opts.retryDelay)
+		s.opts.doRetryDelay()
 		resp, err = s.client.GetNodeId(ctx, req)
 		if err != nil {
 			if s.opts.tries <= i {
@@ -136,11 +143,11 @@ func (s *nodeIDHelper) RenewalNodeID(ctx context.Context, dataModel *nodeidresou
 		interval       = dataModel.HeartbeatInterval.AsDuration()
 		renewalResult  = &RenewalResult{}
 	)
-	if interval <= time.Second {
+	if interval <= time.Millisecond {
 		interval = DefaultHeartbeatInterval
-	}
-	if s.opts.heartbeatInterval > 0 {
-		interval = s.opts.heartbeatInterval
+		if s.opts.heartbeatInterval > 0 {
+			interval = s.opts.heartbeatInterval
+		}
 	}
 	if s.log != nil {
 		s.log.WithContext(ctx).Infow("msg", "RenewalNodeID started", "heartbeat_interval", interval.String())
@@ -197,7 +204,7 @@ func (s *nodeIDHelper) renewalNodeID(ctx context.Context, req *nodeidresourcev1.
 		return resp, nil
 	}
 	for i := 2; i <= s.opts.tries; i++ {
-		time.Sleep(s.opts.retryDelay)
+		s.opts.doRetryDelay()
 		resp, err = s.client.RenewalNodeId(ctx, req)
 		if err != nil {
 			if s.opts.tries <= i {
@@ -251,7 +258,7 @@ func (s *nodeIDHelper) ReleaseNodeId(ctx context.Context, dataModel *nodeidresou
 		return resp, nil
 	}
 	for i := 2; i <= s.opts.tries; i++ {
-		time.Sleep(s.opts.retryDelay)
+		s.opts.doRetryDelay()
 		resp, err = s.client.ReleaseNodeId(ctx, req)
 		if err != nil {
 			if s.opts.tries <= i {

@@ -9,6 +9,13 @@ import (
 	"sync"
 )
 
+var (
+	// NewSnowflakeNode func(int64) (idpkg.Snowflake, error)
+	// idpkg.NewSonySonyflake
+	// idpkg.NewBwmarrinSnowflake
+	NewSnowflakeNode = idpkg.NewSonySonyflake
+)
+
 func GetSingletonSnowflakeNode(ctx context.Context, idManager IDManager, req *nodeidresourcev1.GetNodeIdReq) (idpkg.Snowflake, func(), error) {
 	return idManager.GetSingletonSnowflakeNode(ctx, req)
 }
@@ -54,7 +61,7 @@ func (s *idManager) GetSnowflakeNode(ctx context.Context, req *nodeidresourcev1.
 	if err != nil {
 		return nil, nil, err
 	}
-	node, err := idpkg.NewBwmarrinSnowflake(nodeID.NodeId)
+	node, err := NewSnowflakeNode(nodeID.NodeId)
 	if err != nil {
 		_ = renewal.Stop(ctx)
 		e := errorpkg.ErrorInternalError(err.Error())
