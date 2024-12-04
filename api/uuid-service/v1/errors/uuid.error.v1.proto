@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package saas.api.uuid.errorv1;
+
+option go_package           = "github.com/go-micro-saas/service-api/api/uuid-service/v1/errors;errorv1";
+option java_multiple_files  = true;
+option java_package         = "saas.api.uuid.errorv1";
+option java_outer_classname = "SaasApiUuidErrorV1";
+
+import "errors/errors.proto";
+import "api/nodeid-service/v1/errors/node_id.error.v1.proto";
+
+message README {
+  // error 复用node_id的错误码，详情请查看node_id的错误码；统一在node_id定义
+  saas.api.nodeid.errorv1.ERROR error = 1;
+}
+
+// ERROR 复用node_id的错误码，详情请查看node_id的错误码；统一在node_id定义
+enum ERROR {
+  option (errors.default_code) = 500;
+  UNKNOWN                      = 0 [(errors.code) = 500];  // 未知错误
+}

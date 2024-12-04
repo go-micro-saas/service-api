@@ -13,6 +13,8 @@ protoc-api-protobuf:
 	$(MAKE) protoc-ping-v1-protobuf
 	$(MAKE) protoc-testdata-protobuf
 	$(MAKE) protoc-testdata-v1-protobuf
+	$(MAKE) protoc-uuid-protobuf
+	$(MAKE) protoc-uuid-v1-protobuf
 
 # specified server
 SAAS_SERVICE_SPECIFIED_FILES := $(shell find ./$(REL_PROJECT_PATH)/${service} -name "*.proto")

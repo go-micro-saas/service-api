@@ -94,6 +94,8 @@ include api/ping-service/makefile_protoc.mk
 include api/ping-service/v1/makefile_protoc.mk
 include api/testdata-service/makefile_protoc.mk
 include api/testdata-service/v1/makefile_protoc.mk
+include api/uuid-service/makefile_protoc.mk
+include api/uuid-service/v1/makefile_protoc.mk
 
 # ===== include =====
 # ===== include =====

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package saas.api.uuid.enumv1;
+
+option go_package           = "github.com/go-micro-saas/service-api/api/uuid-service/v1/enums;enumv1";
+option java_multiple_files  = true;
+option java_package         = "saas.api.uuid.enumv1";
+option java_outer_classname = "SaasApiUuidEnumV1";
+
+message UUIDInitEnum {
+  enum UuidInit {
+    UNSPECIFIED = 0;  // 未指定
+  }
+}
