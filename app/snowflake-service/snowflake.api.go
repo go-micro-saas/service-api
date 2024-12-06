@@ -14,33 +14,39 @@ var (
 	DefaultTries = 3
 )
 
-type idOptions struct {
+type options struct {
 	logger              log.Logger
 	serverName          clientutil.ServiceName
 	mustGetNodeIdForAPI bool
 }
-type IdOption func(*idOptions)
+type Option func(*options)
 
-func WithLogger(logger log.Logger) IdOption {
-	return func(o *idOptions) {
+func WithLogger(logger log.Logger) Option {
+	return func(o *options) {
 		o.logger = logger
 	}
 }
 
-func WithServerName(serverName clientutil.ServiceName) IdOption {
-	return func(o *idOptions) {
+func WithServerName(serverName clientutil.ServiceName) Option {
+	return func(o *options) {
 		o.serverName = serverName
 	}
 }
 
-func WithMustGetNodeIdForAPI(mustGetNodeIdForAPI bool) IdOption {
-	return func(o *idOptions) {
+func WithMustGetNodeIdForAPI(mustGetNodeIdForAPI bool) Option {
+	return func(o *options) {
 		o.mustGetNodeIdForAPI = mustGetNodeIdForAPI
 	}
 }
 
-func GetIdGeneratorByHTTPAPI(serviceAPIManager clientutil.ServiceAPIManager, req *nodeidresourcev1.GetNodeIdReq, opts ...IdOption) (idpkg.Snowflake, func(), error) {
-	opt := idOptions{}
+func Options(logger log.Logger) []Option {
+	return []Option{
+		WithLogger(logger),
+	}
+}
+
+func GetIdGeneratorByHTTPAPI(serviceAPIManager clientutil.ServiceAPIManager, req *nodeidresourcev1.GetNodeIdReq, opts ...Option) (idpkg.Snowflake, func(), error) {
+	opt := options{}
 	opt.logger, _ = logpkg.NewDummyLogger()
 	for _, o := range opts {
 		o(&opt)
@@ -57,8 +63,8 @@ func GetIdGeneratorByHTTPAPI(serviceAPIManager clientutil.ServiceAPIManager, req
 	return getIdGenerator(nodeidapi.NewHTTPApi(client), req, &opt)
 }
 
-func GetIdGeneratorByGRPCAPI(serviceAPIManager clientutil.ServiceAPIManager, req *nodeidresourcev1.GetNodeIdReq, opts ...IdOption) (idpkg.Snowflake, func(), error) {
-	opt := idOptions{}
+func GetIdGeneratorByGRPCAPI(serviceAPIManager clientutil.ServiceAPIManager, req *nodeidresourcev1.GetNodeIdReq, opts ...Option) (idpkg.Snowflake, func(), error) {
+	opt := options{}
 	opt.logger, _ = logpkg.NewDummyLogger()
 	for _, o := range opts {
 		o(&opt)
@@ -74,7 +80,7 @@ func GetIdGeneratorByGRPCAPI(serviceAPIManager clientutil.ServiceAPIManager, req
 	return getIdGenerator(nodeidapi.NewGRPCApi(client), req, &opt)
 }
 
-func getIdGenerator(nodeidAPI nodeidapi.NodeIDAPI, req *nodeidresourcev1.GetNodeIdReq, opt *idOptions) (idpkg.Snowflake, func(), error) {
+func getIdGenerator(nodeidAPI nodeidapi.NodeIDAPI, req *nodeidresourcev1.GetNodeIdReq, opt *options) (idpkg.Snowflake, func(), error) {
 	var (
 		logHelper  = log.NewHelper(log.With(opt.logger, "module", "nodeid-api/id-generator"))
 		helperOpts = []nodeidapi.Option{
