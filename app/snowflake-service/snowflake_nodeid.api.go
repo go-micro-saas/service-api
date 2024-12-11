@@ -1,9 +1,10 @@
-package nodeidapi
+package snowflakeapi
 
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
 	nodeidresourcev1 "github.com/go-micro-saas/service-api/api/nodeid-service/v1/resources"
+	nodeidapi "github.com/go-micro-saas/service-api/app/nodeid-service"
 	idpkg "github.com/ikaiguang/go-srv-kit/kit/id"
 	errorpkg "github.com/ikaiguang/go-srv-kit/kratos/error"
 	"sync"
@@ -33,7 +34,7 @@ type IDManager interface {
 
 type idManager struct {
 	log    *log.Helper
-	helper NodeIDHelper
+	helper nodeidapi.NodeIDHelper
 
 	rwMutex           sync.RWMutex
 	singletonMutexMap map[string]*sync.Once
@@ -45,7 +46,7 @@ type SnowflakeNodeInfo struct {
 	Cleanup func()
 }
 
-func NewIDManager(logger log.Logger, helper NodeIDHelper) IDManager {
+func NewIDManager(logger log.Logger, helper nodeidapi.NodeIDHelper) IDManager {
 	logHelper := log.NewHelper(log.With(logger, "module", "nodeid-api/id-manager"))
 	return &idManager{
 		log:    logHelper,

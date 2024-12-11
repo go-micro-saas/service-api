@@ -1,8 +1,9 @@
-package nodeidapi
+package snowflakeapi
 
 import (
 	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
+	nodeidapi "github.com/go-micro-saas/service-api/app/nodeid-service"
 	launcher "github.com/go-micro-saas/service-api/testdata/launcher"
 	clientutil "github.com/ikaiguang/go-srv-kit/service/cluster_service_api"
 	setuputil "github.com/ikaiguang/go-srv-kit/service/setup"
@@ -13,9 +14,7 @@ import (
 var (
 	launcherManager  setuputil.LauncherManager
 	serviceAPIManger clientutil.ServiceAPIManager
-	httpAPIHandler   *httpAPI
-	grpcAPIHandler   *grpcAPI
-	nodeIDHandler    *nodeIDHelper
+	idManagerHandler *idManager
 )
 
 func TestMain(m *testing.M) {
@@ -32,19 +31,18 @@ func TestMain(m *testing.M) {
 	defer func() { _ = launcherManager.Close() }()
 
 	// client
-	httpClient, err := NewHTTPClient(serviceAPIManger)
+	//httpClient, err := nodeidapi.NewHTTPClient(serviceAPIManger)
+	//if err != nil {
+	//	fmt.Printf("%+v\n", err)
+	//	panic(err)
+	//}
+	grpcClient, err := nodeidapi.NewGRPCClient(serviceAPIManger)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		panic(err)
 	}
-	grpcClient, err := NewGRPCClient(serviceAPIManger)
-	if err != nil {
-		fmt.Printf("%+v\n", err)
-		panic(err)
-	}
-	httpAPIHandler = NewHTTPApi(httpClient).(*httpAPI)
-	grpcAPIHandler = NewGRPCApi(grpcClient).(*grpcAPI)
-	nodeIDHandler = NewNodeIDHelper(grpcAPIHandler, WithLogger(log.DefaultLogger)).(*nodeIDHelper)
+	nodeIDHandler := nodeidapi.NewNodeIDHelper(nodeidapi.NewGRPCApi(grpcClient), nodeidapi.WithLogger(log.DefaultLogger))
+	idManagerHandler = NewIDManager(log.DefaultLogger, nodeIDHandler).(*idManager)
 
 	os.Exit(m.Run())
 }

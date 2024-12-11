@@ -1,4 +1,4 @@
-package nodeidapi
+package snowflakeapi
 
 import (
 	"context"
