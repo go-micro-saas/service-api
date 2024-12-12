@@ -710,6 +710,35 @@ func (m *GetServiceInfoRespData) validate(all bool) error {
 		}
 	}
 
+	if all {
+		switch v := interface{}(m.GetNodeEpoch()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, GetServiceInfoRespDataValidationError{
+					field:  "NodeEpoch",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, GetServiceInfoRespDataValidationError{
+					field:  "NodeEpoch",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetNodeEpoch()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return GetServiceInfoRespDataValidationError{
+				field:  "NodeEpoch",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	if len(errors) > 0 {
 		return GetServiceInfoRespDataMultiError(errors)
 	}
@@ -1139,6 +1168,35 @@ func (m *GetNodeIdRespData) validate(all bool) error {
 	}
 
 	// no validation rules for AccessToken
+
+	if all {
+		switch v := interface{}(m.GetNodeEpoch()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, GetNodeIdRespDataValidationError{
+					field:  "NodeEpoch",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, GetNodeIdRespDataValidationError{
+					field:  "NodeEpoch",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetNodeEpoch()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return GetNodeIdRespDataValidationError{
+				field:  "NodeEpoch",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	if len(errors) > 0 {
 		return GetNodeIdRespDataMultiError(errors)

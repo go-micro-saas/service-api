@@ -48,6 +48,7 @@ message GetServiceInfoRespData {
   uint64 max_node_id                          = 2;  // 最大节点；默认：1023
   google.protobuf.Duration idle_duration      = 3;  // 空闲释放时间；默认：100s。
   google.protobuf.Duration heartbeat_interval = 4;  // 心跳续订延长的时间；默认：30s。范围：[1, idle_duration]；延长有效期：now()+idle_duration
+  google.protobuf.Timestamp node_epoch        = 5;
 }
 
 message GetNodeIdReq {
@@ -72,6 +73,7 @@ message GetNodeIdRespData {
   google.protobuf.Timestamp expired_at                  = 4;  // 失效时间；默认：now()+100s
   google.protobuf.Duration heartbeat_interval           = 5;  // 心跳续订间隔时间；默认：30s
   string access_token                                   = 6;  // 令牌；用于续订和释放ID
+  google.protobuf.Timestamp node_epoch                  = 7;
 }
 
 message RenewalNodeIdReq {

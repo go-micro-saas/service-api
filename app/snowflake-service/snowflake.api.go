@@ -17,8 +17,10 @@ var (
 type options struct {
 	logger              log.Logger
 	serverName          clientutil.ServiceName
+	isGetNodeIDFromIPV4 bool
 	mustGetNodeIdForAPI bool
 }
+
 type Option func(*options)
 
 func WithLogger(logger log.Logger) Option {
@@ -33,7 +35,13 @@ func WithServerName(serverName clientutil.ServiceName) Option {
 	}
 }
 
-func WithMustGetNodeIdForAPI(mustGetNodeIdForAPI bool) Option {
+func WithGetNodeIdFromIPV4(isGetNodeIDFromIPV4 bool) Option {
+	return func(o *options) {
+		o.isGetNodeIDFromIPV4 = isGetNodeIDFromIPV4
+	}
+}
+
+func WithMustGetNodeIdFromAPI(mustGetNodeIdForAPI bool) Option {
 	return func(o *options) {
 		o.mustGetNodeIdForAPI = mustGetNodeIdForAPI
 	}
@@ -51,6 +59,9 @@ func GetIdGeneratorByHTTPAPI(serviceAPIManager clientutil.ServiceAPIManager, req
 	for _, o := range opts {
 		o(&opt)
 	}
+	if opt.isGetNodeIDFromIPV4 {
+		return GetIdGeneratorFromIPV4()
+	}
 
 	serverName := nodeidapi.NodeidServiceHTTP
 	if opt.serverName != "" {
@@ -60,7 +71,7 @@ func GetIdGeneratorByHTTPAPI(serviceAPIManager clientutil.ServiceAPIManager, req
 	if err != nil {
 		return nil, nil, err
 	}
-	return getIdGenerator(nodeidapi.NewHTTPApi(client), req, &opt)
+	return GetIdGeneratorFromAPI(nodeidapi.NewHTTPApi(client), req, &opt)
 }
 
 func GetIdGeneratorByGRPCAPI(serviceAPIManager clientutil.ServiceAPIManager, req *nodeidresourcev1.GetNodeIdReq, opts ...Option) (idpkg.Snowflake, func(), error) {
@@ -69,6 +80,10 @@ func GetIdGeneratorByGRPCAPI(serviceAPIManager clientutil.ServiceAPIManager, req
 	for _, o := range opts {
 		o(&opt)
 	}
+	if opt.isGetNodeIDFromIPV4 {
+		return GetIdGeneratorFromIPV4()
+	}
+
 	serverName := nodeidapi.NodeidServiceGRPC
 	if opt.serverName != "" {
 		serverName = opt.serverName
@@ -77,10 +92,10 @@ func GetIdGeneratorByGRPCAPI(serviceAPIManager clientutil.ServiceAPIManager, req
 	if err != nil {
 		return nil, nil, err
 	}
-	return getIdGenerator(nodeidapi.NewGRPCApi(client), req, &opt)
+	return GetIdGeneratorFromAPI(nodeidapi.NewGRPCApi(client), req, &opt)
 }
 
-func getIdGenerator(nodeidAPI nodeidapi.NodeIDAPI, req *nodeidresourcev1.GetNodeIdReq, opt *options) (idpkg.Snowflake, func(), error) {
+func GetIdGeneratorFromAPI(nodeidAPI nodeidapi.NodeIDAPI, req *nodeidresourcev1.GetNodeIdReq, opt *options) (idpkg.Snowflake, func(), error) {
 	var (
 		logHelper  = log.NewHelper(log.With(opt.logger, "module", "nodeid-api/id-generator"))
 		helperOpts = []nodeidapi.Option{
@@ -91,7 +106,7 @@ func getIdGenerator(nodeidAPI nodeidapi.NodeIDAPI, req *nodeidresourcev1.GetNode
 		}
 	)
 	helper := nodeidapi.NewNodeIDHelper(nodeidAPI, helperOpts...)
-	mgr := nodeidapi.NewIDManager(opt.logger, helper)
+	mgr := NewIDManager(opt.logger, helper)
 
 	ctx := context.Background()
 	node, cleanup, err := mgr.GetSingletonSnowflakeNode(ctx, req)
@@ -101,16 +116,24 @@ func getIdGenerator(nodeidAPI nodeidapi.NodeIDAPI, req *nodeidresourcev1.GetNode
 		}
 		logHelper.WithContext(ctx).Warnw("msg", "GetSingletonSnowflakeNode failed", "error", err)
 		err = nil
-		nodeID, _ := idpkg.GenNodeID()
-		if nodeID < 1 {
-			nodeID = 1
-		}
-		node, err = idpkg.NewBwmarrinSnowflake(int64(nodeID))
-		if err != nil {
-			return nil, nil, err
-		}
-		cleanup = func() {}
+		node, cleanup, err = GetIdGeneratorFromIPV4()
+	}
+	if node != nil {
+		idpkg.SetNode(node)
+	}
+	return node, cleanup, nil
+}
+
+func GetIdGeneratorFromIPV4() (idpkg.Snowflake, func(), error) {
+	nodeID, _ := idpkg.GenNodeID()
+	if nodeID < 1 {
+		nodeID = 1
+	}
+	node, err := idpkg.NewBwmarrinSnowflake(int64(nodeID))
+	if err != nil {
+		return nil, nil, err
 	}
 	idpkg.SetNode(node)
+	cleanup := func() {}
 	return node, cleanup, nil
 }

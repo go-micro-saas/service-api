@@ -62,6 +62,9 @@ func (s *idManager) GetSnowflakeNode(ctx context.Context, req *nodeidresourcev1.
 	if err != nil {
 		return nil, nil, err
 	}
+	if nodeID.GetNodeEpoch().GetSeconds() > 0 {
+		idpkg.DefaultEpoch = nodeID.GetNodeEpoch().AsTime()
+	}
 	node, err := NewSnowflakeNode(nodeID.NodeId)
 	if err != nil {
 		_ = renewal.Stop(ctx)
