@@ -8,6 +8,7 @@ import (
 	idpkg "github.com/ikaiguang/go-srv-kit/kit/id"
 	logpkg "github.com/ikaiguang/go-srv-kit/kratos/log"
 	clientutil "github.com/ikaiguang/go-srv-kit/service/cluster_service_api"
+	"time"
 )
 
 var (
@@ -19,6 +20,7 @@ type options struct {
 	serverName          clientutil.ServiceName
 	isGetNodeIDFromIPV4 bool
 	mustGetNodeIdForAPI bool
+	nodeEpoch           time.Time
 }
 
 type Option func(*options)
@@ -44,6 +46,12 @@ func WithGetNodeIdFromIPV4(isGetNodeIDFromIPV4 bool) Option {
 func WithMustGetNodeIdFromAPI(mustGetNodeIdForAPI bool) Option {
 	return func(o *options) {
 		o.mustGetNodeIdForAPI = mustGetNodeIdForAPI
+	}
+}
+
+func WithNodeEpoch(nodeEpoch time.Time) Option {
+	return func(o *options) {
+		o.nodeEpoch = nodeEpoch
 	}
 }
 
@@ -124,7 +132,15 @@ func GetIdGeneratorFromAPI(nodeidAPI nodeidapi.NodeIDAPI, req *nodeidresourcev1.
 	return node, cleanup, nil
 }
 
-func GetIdGeneratorFromIPV4() (idpkg.Snowflake, func(), error) {
+func GetIdGeneratorFromIPV4(opts ...Option) (idpkg.Snowflake, func(), error) {
+	opt := options{}
+	opt.logger, _ = logpkg.NewDummyLogger()
+	for _, o := range opts {
+		o(&opt)
+	}
+	if !opt.nodeEpoch.IsZero() {
+		idpkg.DefaultEpoch = opt.nodeEpoch
+	}
 	nodeID, _ := idpkg.GenNodeID()
 	if nodeID < 1 {
 		nodeID = 1
