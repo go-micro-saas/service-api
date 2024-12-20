@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-// go test -v -count=1 ./app/nodeid-service/ -test.run=Test_idManager_SetNode
+// go test -v -count=1 ./app/snowflake-service/ -test.run=Test_idManager_SetNode
 func Test_idManager_SetNode(t *testing.T) {
 	type args struct {
 		ctx context.Context

@@ -15,6 +15,15 @@ var (
 	DefaultTries = 3
 )
 
+func GetSingletonSnowflakeNode(idManager IDManager, req *nodeidresourcev1.GetNodeIdReq) (idpkg.Snowflake, func(), error) {
+	return idManager.GetSingletonSnowflakeNode(context.Background(), req)
+}
+
+func SetSnowflake(node idpkg.Snowflake) error {
+	idpkg.SetNode(node)
+	return nil
+}
+
 type options struct {
 	logger              log.Logger
 	serverName          clientutil.ServiceName

@@ -17,15 +17,6 @@ var (
 	NewSnowflakeNode = idpkg.NewSonySonyflake
 )
 
-func GetSingletonSnowflakeNode(idManager IDManager, req *nodeidresourcev1.GetNodeIdReq) (idpkg.Snowflake, func(), error) {
-	return idManager.GetSingletonSnowflakeNode(context.Background(), req)
-}
-
-func SetSnowflake(node idpkg.Snowflake) error {
-	idpkg.SetNode(node)
-	return nil
-}
-
 type IDManager interface {
 	GetSingletonSnowflakeNode(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (idpkg.Snowflake, func(), error)
 	GetSnowflakeNode(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (idpkg.Snowflake, func(), error)
