@@ -18,7 +18,11 @@ func getTestingIDManager() IDManager {
 	}
 	logger := log.DefaultLogger
 	grpcAPIHandler := nodeidapi.NewGRPCApi(grpcClient)
-	nodeIDHandler := nodeidapi.NewNodeIDHelper(grpcAPIHandler, nodeidapi.WithLogger(logger))
+	nodeIDHandler, err := nodeidapi.NewNodeIDHelper(grpcAPIHandler, nodeidapi.WithLogger(logger))
+	if err != nil {
+		fmt.Printf("%+v\n", err)
+		panic(err)
+	}
 	return NewIDManager(logger, nodeIDHandler)
 }
 

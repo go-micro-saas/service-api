@@ -8,13 +8,22 @@ import (
 	idpkg "github.com/ikaiguang/go-srv-kit/kit/id"
 	logpkg "github.com/ikaiguang/go-srv-kit/kratos/log"
 	clientutil "github.com/ikaiguang/go-srv-kit/service/cluster_service_api"
+	"sync"
 	"time"
 )
 
 var (
+	_httpIDManager     IDManager
+	_httpIDManagerOnce sync.Once
+	_grpcIDManager     IDManager
+	_grpcIDManagerOnce sync.Once
+
 	DefaultTries = 3
 )
 
+// GetSingletonSnowflakeNode 获取节点
+// http GetIdGeneratorByHTTPAPI
+// grpc GetIdGeneratorByGRPCAPI
 func GetSingletonSnowflakeNode(idManager IDManager, req *nodeidresourcev1.GetNodeIdReq) (idpkg.Snowflake, func(), error) {
 	return idManager.GetSingletonSnowflakeNode(context.Background(), req)
 }
@@ -88,7 +97,15 @@ func GetIdGeneratorByHTTPAPI(serviceAPIManager clientutil.ServiceAPIManager, req
 	if err != nil {
 		return nil, nil, err
 	}
-	return GetIdGeneratorFromAPI(nodeidapi.NewHTTPApi(client), req, &opt)
+	_httpIDManagerOnce.Do(func() {
+		_httpIDManager, err = getIDManager(nodeidapi.NewHTTPApi(client), &opt)
+	})
+	if err != nil {
+		_httpIDManager = nil
+		_httpIDManagerOnce = sync.Once{}
+		return nil, nil, err
+	}
+	return getIdGeneratorFromAPI(_httpIDManager, req, &opt)
 }
 
 func GetIdGeneratorByGRPCAPI(serviceAPIManager clientutil.ServiceAPIManager, req *nodeidresourcev1.GetNodeIdReq, opts ...Option) (idpkg.Snowflake, func(), error) {
@@ -109,12 +126,19 @@ func GetIdGeneratorByGRPCAPI(serviceAPIManager clientutil.ServiceAPIManager, req
 	if err != nil {
 		return nil, nil, err
 	}
-	return GetIdGeneratorFromAPI(nodeidapi.NewGRPCApi(client), req, &opt)
+	_grpcIDManagerOnce.Do(func() {
+		_grpcIDManager, err = getIDManager(nodeidapi.NewGRPCApi(client), &opt)
+	})
+	if err != nil {
+		_grpcIDManager = nil
+		_grpcIDManagerOnce = sync.Once{}
+		return nil, nil, err
+	}
+	return getIdGeneratorFromAPI(_grpcIDManager, req, &opt)
 }
 
-func GetIdGeneratorFromAPI(nodeidAPI nodeidapi.NodeIDAPI, req *nodeidresourcev1.GetNodeIdReq, opt *options) (idpkg.Snowflake, func(), error) {
+func getIDManager(nodeidAPI nodeidapi.NodeIDAPI, opt *options) (IDManager, error) {
 	var (
-		logHelper  = log.NewHelper(log.With(opt.logger, "module", "nodeid-api/id-generator"))
 		helperOpts = []nodeidapi.Option{
 			nodeidapi.WithTries(DefaultTries),
 			nodeidapi.WithRetryDelay(nodeidapi.DefaultRetryDelay),
@@ -122,8 +146,17 @@ func GetIdGeneratorFromAPI(nodeidAPI nodeidapi.NodeIDAPI, req *nodeidresourcev1.
 			nodeidapi.WithLogger(opt.logger),
 		}
 	)
-	helper := nodeidapi.NewNodeIDHelper(nodeidAPI, helperOpts...)
-	mgr := NewIDManager(opt.logger, helper)
+	helper, err := nodeidapi.NewNodeIDHelper(nodeidAPI, helperOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return NewIDManager(opt.logger, helper), nil
+}
+
+func getIdGeneratorFromAPI(mgr IDManager, req *nodeidresourcev1.GetNodeIdReq, opt *options) (idpkg.Snowflake, func(), error) {
+	var (
+		logHelper = log.NewHelper(log.With(opt.logger, "module", "nodeid-api/id-generator"))
+	)
 
 	ctx := context.Background()
 	node, cleanup, err := mgr.GetSingletonSnowflakeNode(ctx, req)

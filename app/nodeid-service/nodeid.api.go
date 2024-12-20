@@ -16,6 +16,7 @@ const (
 )
 
 type NodeIDAPI interface {
+	GetServiceInfo(ctx context.Context) (*nodeidresourcev1.GetServiceInfoRespData, error)
 	GetNodeId(context.Context, *nodeidresourcev1.GetNodeIdReq) (*nodeidresourcev1.GetNodeIdRespData, error)
 	ReleaseNodeId(context.Context, *nodeidresourcev1.ReleaseNodeIdReq) (*nodeidresourcev1.ReleaseNodeIdRespData, error)
 	RenewalNodeId(context.Context, *nodeidresourcev1.RenewalNodeIdReq) (*nodeidresourcev1.RenewalNodeIdRespData, error)
@@ -26,6 +27,7 @@ type NodeIDHelper interface {
 	GetNodeID(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (*nodeidresourcev1.GetNodeIdRespData, error)
 	RenewalNodeID(ctx context.Context, dataModel *nodeidresourcev1.GetNodeIdRespData) (RenewalManager, error)
 	ReleaseNodeId(ctx context.Context, dataModel *nodeidresourcev1.GetNodeIdRespData) (*nodeidresourcev1.ReleaseNodeIdRespData, error)
+	GetServiceInfo(ctx context.Context) (*nodeidresourcev1.GetServiceInfoRespData, error)
 }
 
 type RenewalManager interface {
@@ -101,6 +103,14 @@ func NewGRPCApi(client nodeidservicev1.SrvNodeIDV1Client) NodeIDAPI {
 	return &grpcAPI{client: client}
 }
 
+func (s *grpcAPI) GetServiceInfo(ctx context.Context) (*nodeidresourcev1.GetServiceInfoRespData, error) {
+	resp, err := s.client.GetServiceInfo(ctx, &nodeidresourcev1.GetServiceInfoReq{})
+	if e := apiutil.CheckAPIResponse(resp, err); e != nil {
+		return nil, errorpkg.WithStack(e)
+	}
+	return resp.Data, nil
+}
+
 func (s *grpcAPI) GetNodeId(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (*nodeidresourcev1.GetNodeIdRespData, error) {
 	resp, err := s.client.GetNodeId(ctx, req)
 	if e := apiutil.CheckAPIResponse(resp, err); e != nil {
@@ -135,6 +145,14 @@ type httpAPI struct {
 
 func NewHTTPApi(client nodeidservicev1.SrvNodeIDV1HTTPClient) NodeIDAPI {
 	return &httpAPI{client: client}
+}
+
+func (s *httpAPI) GetServiceInfo(ctx context.Context) (*nodeidresourcev1.GetServiceInfoRespData, error) {
+	resp, err := s.client.GetServiceInfo(ctx, &nodeidresourcev1.GetServiceInfoReq{})
+	if e := apiutil.CheckAPIResponse(resp, err); e != nil {
+		return nil, errorpkg.WithStack(e)
+	}
+	return resp.Data, nil
 }
 
 func (s *httpAPI) GetNodeId(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (*nodeidresourcev1.GetNodeIdRespData, error) {

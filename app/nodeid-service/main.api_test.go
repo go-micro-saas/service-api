@@ -44,7 +44,12 @@ func TestMain(m *testing.M) {
 	}
 	httpAPIHandler = NewHTTPApi(httpClient).(*httpAPI)
 	grpcAPIHandler = NewGRPCApi(grpcClient).(*grpcAPI)
-	nodeIDHandler = NewNodeIDHelper(grpcAPIHandler, WithLogger(log.DefaultLogger)).(*nodeIDHelper)
+	tempNodeIDHandler, err := NewNodeIDHelper(grpcAPIHandler, WithLogger(log.DefaultLogger))
+	if err != nil {
+		fmt.Printf("%+v\n", err)
+		panic(err)
+	}
+	nodeIDHandler = tempNodeIDHandler.(*nodeIDHelper)
 
 	os.Exit(m.Run())
 }

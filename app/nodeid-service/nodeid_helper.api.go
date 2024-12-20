@@ -62,7 +62,7 @@ type nodeIDHelper struct {
 	client NodeIDAPI
 }
 
-func NewNodeIDHelper(client NodeIDAPI, opts ...Option) NodeIDHelper {
+func NewNodeIDHelper(client NodeIDAPI, opts ...Option) (NodeIDHelper, error) {
 	o := &options{
 		retryDelay:        DefaultRetryDelay,
 		heartbeatInterval: DefaultHeartbeatInterval,
@@ -75,7 +75,21 @@ func NewNodeIDHelper(client NodeIDAPI, opts ...Option) NodeIDHelper {
 		o.logger, _ = logpkg.NewDummyLogger()
 	}
 	logHelper = log.NewHelper(log.With(o.logger, "module", "nodeid-api"))
-	return &nodeIDHelper{opts: o, log: logHelper, client: client}
+
+	// service
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	serviceInfo, err := client.GetServiceInfo(ctx)
+	if err != nil {
+		e := errorpkg.ErrorInternalServer("NewNodeIDHelper failed")
+		return nil, errorpkg.WithStack(e)
+	}
+	logHelper.WithContext(ctx).Infow("msg", "NewNodeIDHelper success", "service_info", serviceInfo)
+	return &nodeIDHelper{
+		opts:   o,
+		log:    logHelper,
+		client: client,
+	}, nil
 }
 
 func (s *nodeIDHelper) GetAndAutoRenewalNodeID(ctx context.Context, req *nodeidresourcev1.GetNodeIdReq) (*nodeidresourcev1.GetNodeIdRespData, RenewalManager, error) {
@@ -278,4 +292,8 @@ func (s *nodeIDHelper) ReleaseNodeId(ctx context.Context, dataModel *nodeidresou
 		return nil, errorpkg.WithStack(e)
 	}
 	return nil, errorpkg.FormatError(err)
+}
+
+func (s *nodeIDHelper) GetServiceInfo(ctx context.Context) (*nodeidresourcev1.GetServiceInfoRespData, error) {
+	return s.client.GetServiceInfo(ctx)
 }

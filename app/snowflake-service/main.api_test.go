@@ -41,7 +41,11 @@ func TestMain(m *testing.M) {
 		fmt.Printf("%+v\n", err)
 		panic(err)
 	}
-	nodeIDHandler := nodeidapi.NewNodeIDHelper(nodeidapi.NewGRPCApi(grpcClient), nodeidapi.WithLogger(log.DefaultLogger))
+	nodeIDHandler, err := nodeidapi.NewNodeIDHelper(nodeidapi.NewGRPCApi(grpcClient), nodeidapi.WithLogger(log.DefaultLogger))
+	if err != nil {
+		fmt.Printf("%+v\n", err)
+		panic(err)
+	}
 	idManagerHandler = NewIDManager(log.DefaultLogger, nodeIDHandler).(*idManager)
 
 	os.Exit(m.Run())
