@@ -7,14 +7,14 @@
 3. 错误码用9位数字表示,其中前3位与服务序号保持一致,第4为使用0作为分隔占位,后5位用于表示具体错误码的枚举值. (注意:
    错误码枚举值在error.proto有唯一约束,但在业务和代码中无意义,不应对外暴露)
 
-| 服务             | 服务编号 | http惯用端口号 | grpc惯用端口号 | 错误码                 |
-|:---------------|:-----|:----------|:----------|:--------------------|
-| service-layout | 99   | 9991      | 9992      | 99990001 : UNKNOWN  |
-| dtm-manager    | 100  | 10001     | 10002     | 100000001 : UNKNOWN |
-| ping-service   | 101  | 10101     | 10102     | 101000001 : UNKNOWN |
-| nodeid-service | 102  | 10201     | 10202     | 102000001 : UNKNOWN |
-| user-service   | 103  | 10301     | 10302     | 103000001 : UNKNOWN |
-| admin-service  | 104  | 10401     | 10402     | 104000001 : UNKNOWN |
+| 服务              | 服务编号 | http惯用端口号 | grpc惯用端口号 | 错误码                 |
+|:----------------|:-----|:----------|:----------|:--------------------|
+| service-layout  | 99   | 9991      | 9992      | 99990001 : UNKNOWN  |
+| dtm-manager     | 100  | 10001     | 10002     | 100000001 : UNKNOWN |
+| ping-service    | 101  | 10101     | 10102     | 101000001 : UNKNOWN |
+| nodeid-service  | 102  | 10201     | 10202     | 102000001 : UNKNOWN |
+| account-service | 103  | 10301     | 10302     | 103000001 : UNKNOWN |
+| admin-service   | 104  | 10401     | 10402     | 104000001 : UNKNOWN |
 
 ## testdata
 
@@ -50,7 +50,7 @@ make protoc-ping-v1-protobuf
 
 ```
 
-## 用户服务 user-service
+## 用户服务 account-service
 
 初始化账户：
 
