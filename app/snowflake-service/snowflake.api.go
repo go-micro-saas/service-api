@@ -22,8 +22,8 @@ var (
 )
 
 // GetSingletonSnowflakeNode 获取节点
-// http GetIdGeneratorByHTTPAPI
-// grpc GetIdGeneratorByGRPCAPI
+// http GetSingletonIdGeneratorByHTTPAPI
+// grpc GetSingletonIdGeneratorByGRPCAPI
 func GetSingletonSnowflakeNode(idManager IDManager, req *nodeidresourcev1.GetNodeIdReq) (idpkg.Snowflake, func(), error) {
 	return idManager.GetSingletonSnowflakeNode(context.Background(), req)
 }
@@ -79,7 +79,7 @@ func Options(logger log.Logger) []Option {
 	}
 }
 
-func GetIdGeneratorByHTTPAPI(serviceAPIManager clientutil.ServiceAPIManager, req *nodeidresourcev1.GetNodeIdReq, opts ...Option) (idpkg.Snowflake, func(), error) {
+func GetSingletonIdGeneratorByHTTPAPI(serviceAPIManager clientutil.ServiceAPIManager, req *nodeidresourcev1.GetNodeIdReq, opts ...Option) (idpkg.Snowflake, func(), error) {
 	opt := options{}
 	opt.logger, _ = logpkg.NewDummyLogger()
 	for _, o := range opts {
@@ -108,7 +108,7 @@ func GetIdGeneratorByHTTPAPI(serviceAPIManager clientutil.ServiceAPIManager, req
 	return getIdGeneratorFromAPI(_httpIDManager, req, &opt)
 }
 
-func GetIdGeneratorByGRPCAPI(serviceAPIManager clientutil.ServiceAPIManager, req *nodeidresourcev1.GetNodeIdReq, opts ...Option) (idpkg.Snowflake, func(), error) {
+func GetSingletonIdGeneratorByGRPCAPI(serviceAPIManager clientutil.ServiceAPIManager, req *nodeidresourcev1.GetNodeIdReq, opts ...Option) (idpkg.Snowflake, func(), error) {
 	opt := options{}
 	opt.logger, _ = logpkg.NewDummyLogger()
 	for _, o := range opts {
