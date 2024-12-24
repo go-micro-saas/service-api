@@ -21,6 +21,12 @@ var (
 	DefaultTries = 3
 )
 
+func DefaultOptions(logger log.Logger) []Option {
+	return []Option{
+		WithLogger(logger),
+	}
+}
+
 // GetSingletonSnowflakeNode 获取节点
 // http GetSingletonIdGeneratorByHTTPAPI
 // grpc GetSingletonIdGeneratorByGRPCAPI
@@ -70,12 +76,6 @@ func WithMustGetNodeIdFromAPI(mustGetNodeIdForAPI bool) Option {
 func WithNodeEpoch(nodeEpoch time.Time) Option {
 	return func(o *options) {
 		o.nodeEpoch = nodeEpoch
-	}
-}
-
-func Options(logger log.Logger) []Option {
-	return []Option{
-		WithLogger(logger),
 	}
 }
 
