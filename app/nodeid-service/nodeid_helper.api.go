@@ -5,6 +5,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	nodeiderrorv1 "github.com/go-micro-saas/service-api/api/nodeid-service/v1/errors"
 	nodeidresourcev1 "github.com/go-micro-saas/service-api/api/nodeid-service/v1/resources"
+	contextpkg "github.com/ikaiguang/go-srv-kit/kratos/context"
 	errorpkg "github.com/ikaiguang/go-srv-kit/kratos/error"
 	logpkg "github.com/ikaiguang/go-srv-kit/kratos/log"
 	threadpkg "github.com/ikaiguang/go-srv-kit/kratos/thread"
@@ -183,7 +184,8 @@ func (s *nodeIDHelper) RenewalNodeID(ctx context.Context, dataModel *nodeidresou
 				return
 			case <-ticker.C:
 				renewalResult.LastTime = time.Now()
-				resp, err := s.renewalNodeID(newCtx, req)
+				renewalContext := contextpkg.NewContext(newCtx)
+				resp, err := s.renewalNodeID(renewalContext, req)
 				if err != nil {
 					if s.log != nil {
 						s.log.WithContext(ctx).Warnw("msg", "RenewalNodeID failed", "error", err)
