@@ -18,7 +18,7 @@ require (
 	dario.cat/mergo v1.0.0 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/ThreeDotsLabs/watermill v1.4.1 // indirect
-	github.com/ThreeDotsLabs/watermill-amqp/v2 v2.1.3 // indirect
+	github.com/ThreeDotsLabs/watermill-amqp/v3 v3.0.0 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
