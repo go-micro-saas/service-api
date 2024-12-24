@@ -86,7 +86,7 @@ func GetSingletonIdGeneratorByHTTPAPI(serviceAPIManager clientutil.ServiceAPIMan
 		o(&opt)
 	}
 	if opt.isGetNodeIDFromIPV4 {
-		return GetIdGeneratorFromIPV4()
+		return GetIDGeneratorFromIPV4()
 	}
 
 	serverName := nodeidapi.NodeidServiceHTTP
@@ -115,7 +115,7 @@ func GetSingletonIdGeneratorByGRPCAPI(serviceAPIManager clientutil.ServiceAPIMan
 		o(&opt)
 	}
 	if opt.isGetNodeIDFromIPV4 {
-		return GetIdGeneratorFromIPV4()
+		return GetIDGeneratorFromIPV4()
 	}
 
 	serverName := nodeidapi.NodeidServiceGRPC
@@ -166,7 +166,7 @@ func getIdGeneratorFromAPI(mgr IDManager, req *nodeidresourcev1.GetNodeIdReq, op
 		}
 		logHelper.WithContext(ctx).Warnw("msg", "GetSingletonSnowflakeNode failed", "error", err)
 		err = nil
-		node, cleanup, err = GetIdGeneratorFromIPV4()
+		node, cleanup, err = GetIDGeneratorFromIPV4()
 	}
 	if node != nil {
 		idpkg.SetNode(node)
@@ -174,7 +174,7 @@ func getIdGeneratorFromAPI(mgr IDManager, req *nodeidresourcev1.GetNodeIdReq, op
 	return node, cleanup, nil
 }
 
-func GetIdGeneratorFromIPV4(opts ...Option) (idpkg.Snowflake, func(), error) {
+func GetIDGeneratorFromIPV4(opts ...Option) (idpkg.Snowflake, func(), error) {
 	opt := options{}
 	opt.logger, _ = logpkg.NewDummyLogger()
 	for _, o := range opts {
