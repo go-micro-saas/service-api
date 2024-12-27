@@ -15,6 +15,7 @@
 | nodeid-service  | 102  | 10201     | 10202     | 102000001 : UNKNOWN |
 | account-service | 103  | 10301     | 10302     | 103000001 : UNKNOWN |
 | admin-service   | 104  | 10401     | 10402     | 104000001 : UNKNOWN |
+| org-service     | 105  | 10501     | 10502     | 104000001 : UNKNOWN |
 
 ## testdata
 
