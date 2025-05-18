@@ -79,7 +79,7 @@ func WithNodeEpoch(nodeEpoch time.Time) Option {
 	}
 }
 
-func GetSingletonIDGeneratorByHTTPAPI(serviceAPIManager clientutil.ServiceAPIManager, req *nodeidresourcev1.GetNodeIdReq, opts ...Option) (idpkg.Snowflake, func(), error) {
+func GetSingletonIDGeneratorByHTTPAPI(serviceAPIManager clientutil.ServiceAPIManager, req *nodeidresourcev1.GetNodeIdReq, opts ...Option) (node idpkg.Snowflake, cleanup func(), err error) {
 	opt := options{}
 	opt.logger, _ = logpkg.NewDummyLogger()
 	for _, o := range opts {
@@ -93,6 +93,14 @@ func GetSingletonIDGeneratorByHTTPAPI(serviceAPIManager clientutil.ServiceAPIMan
 	if opt.serverName != "" {
 		serverName = opt.serverName
 	}
+
+	defer func() {
+		if err != nil && !opt.mustGetNodeIdForAPI {
+			_ = opt.logger.Log(log.LevelWarn, "msg", "GetSingletonIDGeneratorByHTTPAPI failed", "error", err)
+			node, cleanup, err = GetIDGeneratorFromIPV4()
+		}
+	}()
+
 	client, err := nodeidapi.NewHTTPClient(serviceAPIManager, serverName)
 	if err != nil {
 		return nil, nil, err
@@ -108,7 +116,7 @@ func GetSingletonIDGeneratorByHTTPAPI(serviceAPIManager clientutil.ServiceAPIMan
 	return getIDGeneratorFromAPI(_httpIDManager, req, &opt)
 }
 
-func GetSingletonIDGeneratorByGRPCAPI(serviceAPIManager clientutil.ServiceAPIManager, req *nodeidresourcev1.GetNodeIdReq, opts ...Option) (idpkg.Snowflake, func(), error) {
+func GetSingletonIDGeneratorByGRPCAPI(serviceAPIManager clientutil.ServiceAPIManager, req *nodeidresourcev1.GetNodeIdReq, opts ...Option) (node idpkg.Snowflake, cleanup func(), err error) {
 	opt := options{}
 	opt.logger, _ = logpkg.NewDummyLogger()
 	for _, o := range opts {
@@ -122,6 +130,14 @@ func GetSingletonIDGeneratorByGRPCAPI(serviceAPIManager clientutil.ServiceAPIMan
 	if opt.serverName != "" {
 		serverName = opt.serverName
 	}
+
+	defer func() {
+		if err != nil && !opt.mustGetNodeIdForAPI {
+			_ = opt.logger.Log(log.LevelWarn, "msg", "GetSingletonIDGeneratorByGRPCAPI failed", "error", err)
+			node, cleanup, err = GetIDGeneratorFromIPV4()
+		}
+	}()
+
 	client, err := nodeidapi.NewGRPCClient(serviceAPIManager, serverName)
 	if err != nil {
 		return nil, nil, err
