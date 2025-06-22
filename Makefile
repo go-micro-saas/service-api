@@ -88,6 +88,8 @@ generate:
 
 # api
 include api/makefile_protoc.mk
+include api/account-service/makefile_protoc.mk
+include api/account-service/v1/makefile_protoc.mk
 include api/nodeid-service/makefile_protoc.mk
 include api/nodeid-service/v1/makefile_protoc.mk
 include api/ping-service/makefile_protoc.mk

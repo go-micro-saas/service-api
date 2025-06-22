@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// go test -v -count=1 ./app/nodeid-service/ -test.run=Test_nodeIDHelper_GetAndAutoRenewalNodeID
+// go test -v -count 1 ./app/nodeid-service/ -run Test_nodeIDHelper_GetAndAutoRenewalNodeID
 func Test_nodeIDHelper_GetAndAutoRenewalNodeID(t *testing.T) {
 	type args struct {
 		ctx context.Context

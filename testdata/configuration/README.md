@@ -39,15 +39,15 @@ vim /etc/hosts
 
 ```text
 # develop
-192.168.10.19 my-service-hostname
-192.168.10.19 my-consul-hostname
-192.168.10.19 my-etcd-hostname
-192.168.10.19 my-jaeger-hostname
-192.168.10.19 my-mysql-hostname
-192.168.10.19 my-postgres-hostname
-192.168.10.19 my-rabbitmq-hostname
-192.168.10.19 my-redis-hostname
-192.168.10.19 my-mongo-hostname
+192.168.10.19 my-service
+192.168.10.19 my-consul
+192.168.10.19 my-etcd
+192.168.10.19 my-jaeger
+192.168.10.19 my-mysql
+192.168.10.19 my-postgres
+192.168.10.19 my-rabbitmq
+192.168.10.19 my-redis
+192.168.10.19 my-mongo
 192.168.10.19 my-mongo1
 192.168.10.19 my-mongo2
 192.168.10.19 my-mongo3
@@ -58,9 +58,9 @@ vim /etc/hosts
 ```shell
 
 # export http_proxy="" 
-# http_proxy="" curl http://my-service-hostname:20101/api/v1/ping/pong
-curl http://my-service-hostname:20101/api/v1/ping/pong
-curl http://my-service-hostname:20201/api/v1/nodeid/ping/pong
-curl http://my-service-hostname:20201/api/v1/nodeid/get-service-info
+# http_proxy="" curl http://my-service:20101/api/v1/ping/pong
+curl http://my-service:20101/api/v1/ping/pong
+curl http://my-service:20201/api/v1/nodeid/ping/pong
+curl http://my-service:20201/api/v1/nodeid/get-service-info
 
 ```

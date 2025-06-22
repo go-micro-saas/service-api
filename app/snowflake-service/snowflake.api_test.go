@@ -26,7 +26,7 @@ func getTestingIDManager() IDManager {
 	return NewIDManager(logger, nodeIDHandler)
 }
 
-// go test -v -count=1 ./app/snowflake-service/ -test.run=TestGetSingletonSnowflakeNode
+// go test -v -count 1 ./app/snowflake-service/ -run TestGetSingletonSnowflakeNode
 func TestGetSingletonSnowflakeNode(t *testing.T) {
 	type args struct {
 		idManager IDManager

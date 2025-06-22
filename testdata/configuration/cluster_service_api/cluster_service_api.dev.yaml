@@ -1,0 +1,53 @@
+# cluster_service_api 项目集群客户端api
+# transport_type 传输协议：http、grpc、...；默认: HTTP
+# registry_type 注册类型：endpoint、consul、...；配置中心配置：${registry_type}；例： Bootstrap.Consul
+# service_target 服务目标：endpoint或registry，例：http://127.0.0.1:8899、discovery:///${registry_endpoint}
+cluster_service_api:
+  - service_name: dtm-manager-http
+    transport_type: http
+    registry_type: endpoint
+    service_target: http://127.0.0.1:10001
+  - service_name: dtm-manager-grpc
+    transport_type: grpc
+    registry_type: consul
+    service_target: discovery:///go-micro-saas:dtm-manager:testing:latest
+  - service_name: ping-service-http
+    transport_type: http
+    registry_type: endpoint
+    service_target: http://dev-ping-service:10101
+  - service_name: ping-service-grpc
+    transport_type: grpc
+    registry_type: consul
+    service_target: discovery:///go-micro-saas:ping-service:testing:v1.0.0
+  - service_name: nodeid-service-http
+    transport_type: http
+    registry_type: endpoint
+    service_target: http://dev-nodeid-service:10201
+  - service_name: nodeid-service-grpc
+    transport_type: grpc
+    registry_type: endpoint
+    service_target: grpc://dev-nodeid-service:10202
+  - service_name: account-service-http
+    transport_type: http
+    registry_type: endpoint
+    service_target: http://dev-account-service:10301
+  - service_name: account-service-grpc
+    transport_type: grpc
+    registry_type: endpoint
+    service_target: grpc://dev-account-service:10302
+  - service_name: admin-service-http
+    transport_type: http
+    registry_type: endpoint
+    service_target: http://dev-admin-service:10401
+  - service_name: admin-service-grpc
+    transport_type: grpc
+    registry_type: endpoint
+    service_target: grpc://dev-admin-service:10402
+  - service_name: org-service-http
+    transport_type: http
+    registry_type: endpoint
+    service_target: http://dev-org-service:10501
+  - service_name: org-service-grpc
+    transport_type: grpc
+    registry_type: endpoint
+    service_target: grpc://dev-org-service:10502

@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-// go test -v -count=1 ./app/ping-service -test.run=Test_Ping_Xxx
+// go test -v -count 1 ./app/ping-service -run Test_Ping_Xxx
 func Test_Ping_Xxx(t *testing.T) {
 	type args struct {
 		handler PingAPI
