@@ -12,7 +12,7 @@ func TestHTTPClient_Xxx(t *testing.T) {
 	var (
 		ctx = context.Background()
 		req = &accountresourcev1.PingReq{
-			Message: "hello world",
+			Message: "hello http",
 		}
 	)
 	resp, err := accountV1HTTP.Ping(ctx, req)
@@ -26,7 +26,7 @@ func TestGRPCClient_Xxx(t *testing.T) {
 	var (
 		ctx = context.Background()
 		req = &accountresourcev1.PingReq{
-			Message: "hello world",
+			Message: "hello grpc",
 		}
 	)
 	resp, err := accountV1GRPC.Ping(ctx, req)
