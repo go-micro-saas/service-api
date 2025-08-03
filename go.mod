@@ -7,7 +7,7 @@ toolchain go1.22.6
 require (
 	github.com/envoyproxy/protoc-gen-validate v1.2.1
 	github.com/go-kratos/kratos/v2 v2.8.4
-	github.com/ikaiguang/go-srv-kit v0.3.44
+	github.com/ikaiguang/go-srv-kit v0.3.46
 	github.com/stretchr/testify v1.10.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20241007155032-5fefd90f89a9
 	google.golang.org/grpc v1.67.1
