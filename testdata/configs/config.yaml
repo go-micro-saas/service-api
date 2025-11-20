@@ -101,7 +101,7 @@ cluster_service_api:
   - service_name: org-service-grpc
     transport_type: grpc
     registry_type: endpoint
-    service_target: grpc://127.0.0.1:20402
+    service_target: grpc://127.0.0.1:20502
 
 
 

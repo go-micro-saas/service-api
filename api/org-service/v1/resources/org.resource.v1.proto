@@ -1,0 +1,376 @@
+syntax = "proto3";
+
+package saas.api.org.resourcev1;
+
+// 多语言特定包名，用于源代码引用
+option go_package           = "github.com/go-micro-saas/service-api/api/org-service/v1/resources;resourcev1";
+option java_multiple_files  = true;
+option java_package         = "saas.api.org.resourcev1";
+option java_outer_classname = "SaasApiOrgResourceV1";
+
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "github.com/ikaiguang/go-srv-kit/kit/page/page.kit.proto";
+import "api/org-service/v1/enums/org.enum.v1.proto";
+import "api/org-service/v1/resources/org_employee.resource.v1.proto";
+import "api/org-service/v1/resources/org_invite_record.resource.v1.proto";
+
+message PingReq {
+  string message = 1;
+}
+message PingResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+
+  PingRespData data = 100;
+}
+message PingRespData {
+  string message = 1;
+}
+
+// Org ENGINE InnoDB CHARSET utf8mb4 COMMENT '组织'
+message Org {
+  uint64 id                                 = 1;
+  string created_time                       = 2;
+  string updated_time                       = 3;
+  uint64 deleted_time                       = 4;
+  uint64 org_id                             = 5;
+  string org_name                           = 6;
+  string org_avatar                         = 7;
+  string org_contact_name                   = 8;
+  string org_contact_phone                  = 9;
+  string org_contact_email                  = 10;
+  enumv1.OrgTypeEnum.OrgType org_type       = 11;
+  enumv1.OrgStatusEnum.OrgStatus org_status = 12;
+  uint64 org_industry_id                    = 13;
+  uint64 org_scale_id                       = 14;
+  string org_address                        = 15;
+  string org_zip_code                       = 16;
+  uint64 org_creator_id                     = 17;
+}
+
+message CreateOrgReq {
+  uint64 creator_id     = 100 [(validate.rules).uint64.gt = 0];               // 创建人ID
+  string creator_name   = 101 [(validate.rules).string.min_len = 1];          // 创建人名称
+  string creator_avatar = 102 [(validate.rules).string.ignore_empty = true];  // 创建人头像
+
+  string org_name                     = 1 [(validate.rules).string.min_len = 1];          // 组织名称
+  string org_avatar                   = 2 [(validate.rules).string.ignore_empty = true];  // 组织头像
+  enumv1.OrgTypeEnum.OrgType org_type = 3 [(validate.rules).enum = { not_in: [ 0 ] }];    // 组织类型
+}
+message OnlyCreateOrgReq {
+  uint64 creator_id = 100 [(validate.rules).uint64.gt = 0];  // 创建人ID
+
+  string org_name                     = 1 [(validate.rules).string.min_len = 1];          // 组织名称
+  string org_avatar                   = 2 [(validate.rules).string.ignore_empty = true];  // 组织头像
+  enumv1.OrgTypeEnum.OrgType org_type = 3 [(validate.rules).enum = { not_in: [ 0 ] }];    // 组织类型
+}
+message CreateOrgResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+
+  CreateOrgRespData data = 100;
+}
+message CreateOrgRespData {
+  uint64 org_id                             = 1;
+  string org_name                           = 2;
+  string org_avatar                         = 3;
+  enumv1.OrgTypeEnum.OrgType org_type       = 4;
+  enumv1.OrgStatusEnum.OrgStatus org_status = 5;
+}
+
+message AddEmployeeReq {
+  uint64 operator_uid = 100 [(validate.rules).uint64.gt = 0];  // 操作人ID
+
+  uint64 org_id                                            = 1 [(validate.rules).uint64.gt = 0];               // 组织ID
+  uint64 user_id                                           = 2 [(validate.rules).uint64.gt = 0];               // 成员ID
+  string user_name                                         = 3 [(validate.rules).string.min_len = 1];          // 成员名称
+  enumv1.OrgEmployeeRoleEnum.OrgEmployeeRole employee_role = 4 [(validate.rules).enum = { not_in: [ 0 ] }];    // 成员角色
+  string user_avatar                                       = 5 [(validate.rules).string.ignore_empty = true];  // 成员头像
+  string user_phone                                        = 6 [(validate.rules).string.ignore_empty = true];  // 成员电话
+  string user_email                                        = 7 [(validate.rules).string.ignore_empty = true];  // 成员邮箱
+}
+message AddEmployeeResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+
+  AddEmployeeRespData data = 100;
+}
+message AddEmployeeRespData {
+  uint64 org_id                                                  = 1;
+  uint64 user_id                                                 = 2;
+  uint64 employee_id                                             = 3;
+  string employee_name                                           = 4;
+  string employee_avatar                                         = 5;
+  enumv1.OrgEmployeeStatusEnum.OrgEmployeeStatus employee_status = 6;  // 成员状态
+  enumv1.OrgEmployeeRoleEnum.OrgEmployeeRole employee_role       = 7;  // 成员角色
+}
+
+message CreateInviteRecordForLinkReq {
+  uint64 operator_uid                                             = 100 [(validate.rules).uint64.gt = 0];                  // 操作人ID
+  uint64 org_id                                                   = 1 [(validate.rules).uint64.gt = 0];                    // 组织ID
+  google.protobuf.Timestamp expire_time                           = 2 [(validate.rules).timestamp = { required: false }];  // 过期时间;默认1天
+  enumv1.OrgEmployeeRoleEnum.OrgEmployeeRole invite_employee_role = 3 [(validate.rules).enum = { not_in: [ 0 ] }];         // 被邀请人角色
+}
+message CreateInviteRecordForLinkResp {
+  int32 code                             = 1;
+  string reason                          = 2;
+  string message                         = 3;
+  map<string, string> metadata           = 4;
+  CreateInviteRecordForLinkRespData data = 100;
+}
+message CreateInviteRecordForLinkRespData {
+  uint64 invite_id                      = 1;
+  string invite_code                    = 2;
+  google.protobuf.Timestamp expire_time = 3;
+}
+
+message CreateInviteRecordForEmployeeReq {
+  uint64 operator_uid = 100 [(validate.rules).uint64.gt = 0];  // 操作人ID
+  uint64 org_id       = 101 [(validate.rules).uint64.gt = 0];  // 组织ID
+
+  uint64 invite_user_id                                                    = 1 [(validate.rules).uint64.gt = 0];                          // 被邀请人ID
+  string invite_account                                                    = 2 [(validate.rules).string = { min_len: 1, max_len: 128 }];  // 被邀请人账号
+  google.protobuf.Timestamp expire_time                                    = 3 [(validate.rules).timestamp = { required: false }];        // 过期时间;默认1天
+  enumv1.OrgInviteAccountTypeEnum.OrgInviteAccountType invite_account_type = 4 [(validate.rules).enum = { not_in: [ 0 ] }];               // 被邀请人账号类型
+  enumv1.OrgEmployeeRoleEnum.OrgEmployeeRole invite_employee_role          = 5 [(validate.rules).enum = { not_in: [ 0 ] }];               // 被邀请人角色
+}
+message CreateInviteRecordForEmployeeResp {
+  int32 code                                 = 1;
+  string reason                              = 2;
+  string message                             = 3;
+  map<string, string> metadata               = 4;
+  CreateInviteRecordForEmployeeRespData data = 100;
+}
+message CreateInviteRecordForEmployeeRespData {
+  uint64 invite_id                      = 1;
+  string invite_code                    = 2;
+  google.protobuf.Timestamp expire_time = 3;
+  uint64 assign_employee_id             = 4;
+}
+
+message JoinByInviteLinkReq {
+  uint64 invite_id   = 100 [(validate.rules).uint64 = { gt: 0 }];
+  string invite_code = 101 [(validate.rules).string = { min_len: 1, max_len: 128 }];
+
+  uint64 user_id     = 1 [(validate.rules).uint64.gt = 0];               // 成员ID
+  string user_name   = 2 [(validate.rules).string.min_len = 1];          // 成员名称
+  string user_avatar = 5 [(validate.rules).string.ignore_empty = true];  // 成员头像
+  string user_phone  = 6 [(validate.rules).string.ignore_empty = true];  // 成员电话
+  string user_email  = 7 [(validate.rules).string.ignore_empty = true];  // 成员邮箱
+}
+message JoinByInviteLinkResp {
+  int32 code                    = 1;
+  string reason                 = 2;
+  string message                = 3;
+  map<string, string> metadata  = 4;
+  JoinByInviteLinkRespData data = 100;
+}
+message JoinByInviteLinkRespData {
+  uint64 org_id                                                  = 1;
+  uint64 user_id                                                 = 2;
+  uint64 employee_id                                             = 3;
+  string employee_name                                           = 4;
+  string employee_avatar                                         = 5;
+  enumv1.OrgEmployeeStatusEnum.OrgEmployeeStatus employee_status = 6;  // 成员状态
+  enumv1.OrgEmployeeRoleEnum.OrgEmployeeRole employee_role       = 7;  // 成员角色
+}
+
+message AgreeOrRefuseInviteReq {
+  uint64 invite_id   = 100 [(validate.rules).uint64 = { gt: 0 }];                     //
+  string invite_code = 101 [(validate.rules).string = { min_len: 1, max_len: 128 }];  //
+  bool isAgree       = 102;                                                           // 同意加入
+
+  uint64 user_id     = 1 [(validate.rules).uint64.gt = 0];               // 成员ID
+  string user_name   = 2 [(validate.rules).string.min_len = 1];          // 成员名称
+  string user_avatar = 5 [(validate.rules).string.ignore_empty = true];  // 成员头像
+  string user_phone  = 6 [(validate.rules).string.ignore_empty = true];  // 成员电话
+  string user_email  = 7 [(validate.rules).string.ignore_empty = true];  // 成员邮箱
+}
+message AgreeOrRefuseInviteResp {
+  int32 code                       = 1;
+  string reason                    = 2;
+  string message                   = 3;
+  map<string, string> metadata     = 4;
+  AgreeOrRefuseInviteRespData data = 100;
+}
+message AgreeOrRefuseInviteRespData {
+  uint64 org_id                                                  = 1;
+  uint64 user_id                                                 = 2;
+  uint64 employee_id                                             = 3;
+  string employee_name                                           = 4;
+  string employee_avatar                                         = 5;
+  enumv1.OrgEmployeeStatusEnum.OrgEmployeeStatus employee_status = 6;  // 成员状态
+  enumv1.OrgEmployeeRoleEnum.OrgEmployeeRole employee_role       = 7;  // 成员角色
+}
+
+message GetOrgInfoReq {
+  uint64 org_id = 100 [(validate.rules).uint64.gt = 0];  // 组织ID
+}
+message GetOrgInfoResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+  Org data                     = 100;
+}
+
+message GetOrgInfoListReq {
+  repeated uint64 org_ids = 100 [(validate.rules).repeated = { min_items: 1 }];  // 组织ID
+}
+message GetOrgInfoListResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+  repeated Org data            = 100;
+}
+
+message GetOrgEmployeeInfoReq {
+  uint64 employee_id = 100 [(validate.rules).uint64.gt = 0];
+}
+message GetUserOrgEmployeeInfoReq {
+  uint64 user_id = 100 [(validate.rules).uint64.gt = 0];
+  uint64 org_id  = 101 [(validate.rules).uint64.gt = 0];
+}
+message GetOrgEmployeeInfoResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+  OrgEmployee data             = 100;
+}
+
+message GetOrgEmployeeInfoListReq {
+  repeated uint64 employee_ids = 100 [(validate.rules).repeated = { min_items: 1 }];
+}
+message GetOrgEmployeeInfoListResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+  repeated OrgEmployee data    = 100;
+}
+
+message GetOrgInviteRecordInfoReq {
+  uint64 invite_id = 100 [(validate.rules).uint64.gt = 0];
+}
+message GetOrgInviteRecordInfoResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+  OrgInviteRecord data         = 100;
+}
+
+message GetOrgInviteRecordInfoListReq {
+  repeated uint64 invite_ids = 100 [(validate.rules).repeated = { min_items: 1 }];
+}
+message GetOrgInviteRecordInfoListResp {
+  int32 code                    = 1;
+  string reason                 = 2;
+  string message                = 3;
+  map<string, string> metadata  = 4;
+  repeated OrgInviteRecord data = 100;
+}
+
+message GetOrgListReq {
+  kit.page.pagepkg.PageRequest page_request = 1;
+
+  repeated uint64 org_ids = 100;  // 组织ids
+  string org_name         = 101;  // 组织名称
+}
+message GetOrgListResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+
+  GetOrgListRespData data = 100;
+}
+message GetOrgListRespData {
+  repeated Org list                       = 1;
+  kit.page.pagepkg.PageResponse page_info = 2;
+}
+
+message GetOrgEmployeeListReq {
+  kit.page.pagepkg.PageRequest page_request = 1;
+
+  repeated uint64 org_ids      = 100;  // 组织ids
+  repeated uint64 employee_ids = 101;  // 成员ids
+  repeated uint64 user_ids     = 102;  // 用户ids
+  string employee_name         = 103;  // 成员名称
+}
+message GetOrgEmployeeListResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+
+  GetOrgEmployeeListRespData data = 100;
+}
+message GetOrgEmployeeListRespData {
+  repeated OrgEmployee list               = 1;
+  kit.page.pagepkg.PageResponse page_info = 2;
+}
+
+message GetOrgInviteRecordListReq {
+  kit.page.pagepkg.PageRequest page_request = 1;
+
+  repeated uint64 org_ids          = 100;  // 组织ids
+  repeated uint64 inviter_user_ids = 102;  // 邀请人ids
+  repeated uint64 invite_ids       = 103;  // 邀请ids
+  string invite_code               = 104;  // 邀请码
+  string invite_account            = 105;  // 邀请账号
+}
+message GetOrgInviteRecordListResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+
+  GetOrgInviteRecordListRespData data = 100;
+}
+message GetOrgInviteRecordListRespData {
+  repeated OrgInviteRecord list           = 1;
+  kit.page.pagepkg.PageResponse page_info = 2;
+}
+
+message SetOrgStatusReq {
+  uint64 operator_eid                       = 100 [(validate.rules).uint64.gt = 0];           // 操作成员ID
+  uint64 org_id                             = 1 [(validate.rules).uint64.gt = 0];             // 组织ID
+  enumv1.OrgStatusEnum.OrgStatus org_status = 2 [(validate.rules).enum = { not_in: [ 0 ] }];  // 组织状态
+}
+message SetOrgStatusResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+  SetOrgStatusRespData data    = 100;
+}
+message SetOrgStatusRespData {
+  bool success                              = 100;
+  uint64 org_id                             = 1;
+  enumv1.OrgStatusEnum.OrgStatus org_status = 2;
+}
+
+message GetUserLastOrgReq {
+  uint64 user_id     = 1 [(validate.rules).uint64.gt = 0];               // 用户ID
+  string user_name   = 2 [(validate.rules).string.min_len = 1];          // 用户名称
+  string user_avatar = 3 [(validate.rules).string.ignore_empty = true];  // 用户头像
+
+  bool create_personal_org_if_not_exist = 100;  // 是否创建个人组织
+}
+message GetUserLastOrgResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+  CreateOrgRespData data       = 100;
+}

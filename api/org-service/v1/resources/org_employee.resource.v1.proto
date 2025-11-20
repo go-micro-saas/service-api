@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package saas.api.org.resourcev1;
+
+// 多语言特定包名，用于源代码引用
+option go_package           = "github.com/go-micro-saas/service-api/api/org-service/v1/resources;resourcev1";
+option java_multiple_files  = true;
+option java_package         = "saas.api.org.resourcev1";
+option java_outer_classname = "SaasApiOrgResourceV1";
+
+import "validate/validate.proto";
+// import "github.com/ikaiguang/go-srv-kit/kit/page/page.kit.proto";
+import "api/org-service/v1/enums/org.enum.v1.proto";
+
+// OrgEmployee ENGINE InnoDB CHARSET utf8mb4 COMMENT '组织成员'
+message OrgEmployee {
+  uint64 id                                                                   = 1;
+  string created_time                                                         = 2;
+  string updated_time                                                         = 3;
+  uint64 deleted_time                                                         = 4;
+  uint64 employee_id                                                          = 5;
+  uint64 user_id                                                              = 6;
+  uint64 org_id                                                               = 7;
+  string employee_name                                                        = 8;
+  string employee_avatar                                                      = 9;
+  string employee_phone                                                       = 10;
+  string employee_email                                                       = 11;
+  saas.api.org.enumv1.OrgEmployeeRoleEnum.OrgEmployeeRole employee_role       = 12;
+  saas.api.org.enumv1.OrgEmployeeStatusEnum.OrgEmployeeStatus employee_status = 13;
+  uint64 inviter_record_id                                                    = 14;
+  uint64 inviter_user_id                                                      = 15;
+}
+
+message RemoveEmployeeReq {
+  uint64 operator_eid = 100 [(validate.rules).uint64.gt = 0];
+
+  uint64 employee_id = 1 [(validate.rules).uint64.gt = 0];
+}
+message RemoveEmployeeResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+
+  RemoveEmployeeRespData data = 100;
+}
+message RemoveEmployeeRespData {
+  bool success = 100;
+
+  uint64 employee_id = 1;
+}
+
+message SetEmployeeRoleReq {
+  uint64 operator_eid = 100 [(validate.rules).uint64.gt = 0];
+
+  uint64 employee_id                                       = 1 [(validate.rules).uint64.gt = 0];
+  enumv1.OrgEmployeeRoleEnum.OrgEmployeeRole employee_role = 2 [(validate.rules).enum = { not_in: [ 0 ] }];
+}
+message SetEmployeeRoleResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+  SetEmployeeRoleRespData data = 100;
+}
+message SetEmployeeRoleRespData {
+  bool success = 100;
+
+  uint64 employee_id                                       = 1;
+  enumv1.OrgEmployeeRoleEnum.OrgEmployeeRole employee_role = 2;
+}
+
+message SetEmployeeStatusReq {
+  uint64 operator_eid                                            = 100 [(validate.rules).uint64.gt = 0];
+  uint64 employee_id                                             = 1 [(validate.rules).uint64.gt = 0];
+  enumv1.OrgEmployeeStatusEnum.OrgEmployeeStatus employee_status = 2 [(validate.rules).enum = { not_in: [ 0 ] }];
+}
+message SetEmployeeStatusResp {
+  int32 code                   = 1;
+  string reason                = 2;
+  string message               = 3;
+  map<string, string> metadata = 4;
+
+  SetEmployeeStatusRespData data = 100;
+}
+message SetEmployeeStatusRespData {
+  bool success = 100;
+
+  uint64 employee_id                                             = 1;
+  enumv1.OrgEmployeeStatusEnum.OrgEmployeeStatus employee_status = 2;
+}

@@ -92,6 +92,8 @@ include api/account-service/makefile_protoc.mk
 include api/account-service/v1/makefile_protoc.mk
 include api/nodeid-service/makefile_protoc.mk
 include api/nodeid-service/v1/makefile_protoc.mk
+include api/org-service/makefile_protoc.mk
+include api/org-service/v1/makefile_protoc.mk
 include api/ping-service/makefile_protoc.mk
 include api/ping-service/v1/makefile_protoc.mk
 include api/testdata-service/makefile_protoc.mk

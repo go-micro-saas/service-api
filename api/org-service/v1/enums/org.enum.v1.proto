@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package saas.api.org.enumv1;
+
+option go_package           = "github.com/go-micro-saas/service-api/api/org-service/v1/enums;enumv1";
+option java_multiple_files  = true;
+option java_package         = "saas.api.org.enumv1";
+option java_outer_classname = "SaasApiOrgEnumV1";
+
+// TestdataInitEnum TestdataInitEnum enum
+message TestdataInitEnum {
+  // TestdataInit TestdataInit enum
+  enum TestdataInit {
+    // UNSPECIFIED 未指定
+    UNSPECIFIED = 0;
+  }
+}
+
+message OrgTypeEnum {
+  enum OrgType {
+    UNSPECIFIED = 0;  // 未指定
+    PERSON      = 1;  // 个人版
+    STANDARD    = 2;  // 标准版
+  }
+}
+
+message OrgStatusEnum {
+  enum OrgStatus {
+    UNSPECIFIED = 0;  // 未指定
+    ENABLE      = 1;  // 有效的
+    DISABLE     = 2;  // 已禁用
+    EXPIRED     = 3;  // 已过期
+    DELETED     = 4;  // 已删除
+  }
+}
+
+message OrgEmployeeRoleEnum {
+  enum OrgEmployeeRole {
+    UNSPECIFIED = 0;  // 未指定
+    CREATOR     = 1;  // 创建者
+    NORMAL      = 2;  // 普通成员
+    ADMIN       = 3;  // 管理员
+    SUPER       = 4;  // 超级管理员
+  }
+}
+
+message OrgEmployeeStatusEnum {
+  enum OrgEmployeeStatus {
+    UNSPECIFIED = 0;  // 未指定
+    ENABLE      = 1;  // 有效的
+    DISABLE     = 2;  // 已禁用
+    REMOVED     = 3;  // 已移除
+    DELETED     = 4;  // 已删除
+  }
+}
+
+message OrgInviteTypeEnum {
+  enum OrgInviteType {
+    UNSPECIFIED = 0;  // 未指定
+    ACCOUNT     = 1;  // 账号邀请
+    LINK        = 2;  // 链接邀请
+  }
+}
+
+message OrgInviteAccountTypeEnum {
+  enum OrgInviteAccountType {
+    UNSPECIFIED = 0;  // 未指定
+    PHONE       = 1;  // 手机
+    EMAIL       = 2;  // 邮箱
+    WECHAT      = 3;  // 微信
+    FIESHU      = 4;  // 飞书
+    DINGTALK    = 5;  // 钉钉
+    UID         = 6;  // 用户ID
+  }
+}
+
+message OrgInviteStatusEnum {
+  enum OrgInviteStatus {
+    UNSPECIFIED = 0;  // 未指定
+    INVITING    = 1;  // 邀请中
+    AGREED      = 2;  // 已同意
+    REJECTED    = 3;  // 已拒绝
+    CANCELLED   = 4;  // 已取消
+    EXPIRED     = 5;  // 已过期
+  }
+}
+
+message OrgEventStatusEnum {
+  enum OrgEventStatus {
+    UNSPECIFIED   = 0;  // 未指定
+    SUCCESS       = 1;  // 成功
+    FAILED        = 2;  // 失败的状态
+    TRYING        = 3;  // 重试中
+    RETRY_SUCCESS = 4;  // 重试成功
+    RETRY_FAILED  = 5;  // 重试失败
+  }
+}

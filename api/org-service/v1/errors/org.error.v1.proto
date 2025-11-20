@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package saas.api.org.errorv1;
+
+import "errors/errors.proto";
+
+// 多语言特定包名，用于源代码引用
+option go_package           = "github.com/go-micro-saas/service-api/api/org-service/v1/errors;errorv1";
+option java_multiple_files  = true;
+option java_package         = "saas.api.org.errorv1";
+option java_outer_classname = "SaasApiOrgErrorV1";
+
+// ERROR .
+enum ERROR {
+  option (errors.default_code) = 500;
+
+  UNKNOWN                        = 0 [(errors.code) = 500];
+  S105_CANNOT_BE_OWNER           = 105000001 [(errors.code) = 400];  // 不能设置为组织的所有者
+  S105_INVALID_OPERATOR          = 105000002 [(errors.code) = 400];  // 无效的操作员
+  S105_ORG_NOT_FOUND             = 105000003 [(errors.code) = 400];  // 组织不存在
+  S105_ORG_EXISTS                = 105000004 [(errors.code) = 400];  // 组织已存在
+  S105_EMPLOYEE_EXISTS           = 105000005 [(errors.code) = 400];  // 成员已存在
+  S105_EMPLOYEE_NOT_FOUND        = 105000006 [(errors.code) = 400];  // 成员不存在
+  S105_EMPLOYEE_NOT_OWNER        = 105000007 [(errors.code) = 400];  // 成员不是组织的所有者
+  S105_EMPLOYEE_NOT_ADMIN        = 105000008 [(errors.code) = 400];  // 成员不是组织的管理员
+  S105_EMPLOYEE_NOT_SUPER        = 105000009 [(errors.code) = 400];  // 成员不是组织的超级管理员
+  S105_EMPLOYEE_NOT_NORMAL       = 105000010 [(errors.code) = 400];  // 成员不是组织的普通成员
+  S105_EMPLOYEE_NOT_ENABLE       = 105000011 [(errors.code) = 400];  // 成员不是有效的
+  S105_EMPLOYEE_NOT_CREATOR      = 105000012 [(errors.code) = 400];  // 成员不是创建者
+  S105_EMPLOYEE_DISABLE          = 105000013 [(errors.code) = 400];  // 成员已被禁用
+  S105_EMPLOYEE_NO_PERMISSION    = 105000014 [(errors.code) = 400];  // 无权限
+  S105_NOT_ORG_EMPLOYEE          = 105000015 [(errors.code) = 400];  // 不是组织的成员
+  S105_INVALID_INVITE_RECORD     = 105000016 [(errors.code) = 400];  // 无效的邀请
+  S105_INVITATION_HAS_EXPIRED    = 105000017 [(errors.code) = 400];  // 邀请已过期
+  S105_INVALID_INVITE_STATUS     = 105000018 [(errors.code) = 400];  // 无效的邀请状态
+  S105_NOT_INVITED_USER          = 105000019 [(errors.code) = 400];  // 不是被邀请用户
+  S105_INCORRECT_INVITE_TYPE     = 105000020 [(errors.code) = 400];  // 邀请类型不正确
+  S105_NOT_ALLOWED_SET_STATUS    = 105000021 [(errors.code) = 400];  // 不允许设置为此状态
+  S105_ORG_NOT_ENABLE            = 105000022 [(errors.code) = 400];  // 组织未启用
+  S105_NOT_ALLOWED_SET_ROLE      = 105000023 [(errors.code) = 400];  // 不允许设置为此角色
+  S105_CANNOT_MODIFY_SELF        = 105000024 [(errors.code) = 400];  // 不能修改自己
+  S105_ALREADY_HAS_PERSONAL_ORG  = 105000025 [(errors.code) = 400];  // 已有个人版组织
+  S105_USER_BELONG_ORG_MAX_COUNT = 105000026 [(errors.code) = 400];  // 已达创建或加入组织限制
+  S105_USER_CREATE_ORG_MAX_COUNT = 105000027 [(errors.code) = 400];  // 已达创建组织限制
+}

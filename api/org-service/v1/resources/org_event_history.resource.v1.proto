@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package saas.api.org.resourcev1;
+
+// 多语言特定包名，用于源代码引用
+option go_package           = "github.com/go-micro-saas/service-api/api/org-service/v1/resources;resourcev1";
+option java_multiple_files  = true;
+option java_package         = "saas.api.org.resourcev1";
+option java_outer_classname = "SaasApiOrgResourceV1";
+
+// import "github.com/ikaiguang/go-srv-kit/kit/page/page.kit.proto";
+
+// OrgEventHistory ENGINE InnoDB CHARSET utf8mb4 COMMENT '事件历史'
+message OrgEventHistory {
+  // id ID
+  uint64 id = 1;
+  // created_time 创建时间
+  string created_time = 2;
+  // updated_time 最后修改时间
+  string updated_time = 3;
+  // event_name 事件名称
+  string event_name = 4;
+  // event_status 事件状态；1：成功，2：失败，3：重试中，4：重试成功，5：重试失败。。。
+  uint32 event_status = 5;
+  // event_content 事件内容
+  string event_content = 6;
+  // event_error 事件错误信息
+  string event_error = 7;
+  // retry_event_time 重试事件时间
+  uint64 retry_event_time = 8;
+  // retry_event_counter 重试事件次数
+  uint32 retry_event_counter = 9;
+  // retry_event_result 重试事件结果
+  string retry_event_result = 10;
+}

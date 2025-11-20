@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package saas.api.org.resourcev1;
+
+// 多语言特定包名，用于源代码引用
+option go_package           = "github.com/go-micro-saas/service-api/api/org-service/v1/resources;resourcev1";
+option java_multiple_files  = true;
+option java_package         = "saas.api.org.resourcev1";
+option java_outer_classname = "SaasApiOrgResourceV1";
+
+// import "github.com/ikaiguang/go-srv-kit/kit/page/page.kit.proto";
+import "api/org-service/v1/enums/org.enum.v1.proto";
+
+// OrgInviteRecord ENGINE InnoDB CHARSET utf8mb4 COMMENT '事件历史'
+message OrgInviteRecord {
+  // id ID
+  uint64 id = 1;
+  // created_time 创建时间
+  string created_time = 2;
+  // updated_time 最后修改时间
+  string updated_time = 3;
+  // invite_id uuid
+  uint64 invite_id = 4;
+  // org_id 组织ID
+  uint64 org_id = 5;
+  // inviter_employee_id 邀请者成员ID
+  uint64 inviter_employee_id = 6;
+  // invited_type 邀请类型：1：账号邀请，2：链接邀请
+  enumv1.OrgInviteTypeEnum.OrgInviteType invited_type = 7;
+  // invited_user_id 被邀请者用户ID
+  uint64 invited_user_id = 8;
+  // invited_account 被邀请者账户
+  string invited_account = 9;
+  // invited_account_type 被邀请者账户类型：1：手机，2：邮箱，3：微信，4：飞书，5：钉钉
+  enumv1.OrgInviteAccountTypeEnum.OrgInviteAccountType invited_account_type = 10;
+  // invited_employee_role 角色；1：创建者，2：普通成员，3：管理员，4：超级管理员
+  enumv1.OrgEmployeeRoleEnum.OrgEmployeeRole invited_employee_role = 11;
+  // invite_status 状态；1：邀请中，2：已同意，3：已拒绝，4：已取消，5：已过期
+  enumv1.OrgInviteStatusEnum.OrgInviteStatus invite_status = 12;
+  // assign_employee_id 分配成员ID
+  uint64 assign_employee_id = 13;
+  // invite_code 邀请码
+  string invite_code = 14;
+}
