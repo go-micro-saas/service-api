@@ -2,9 +2,10 @@ package accountapi
 
 import (
 	"context"
+	"testing"
+
 	accountresourcev1 "github.com/go-micro-saas/service-api/api/account-service/v1/resources"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 // go test -v -count 1 ./app/account-service -run TestHTTPClient_Xxx

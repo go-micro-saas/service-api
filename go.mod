@@ -5,7 +5,7 @@ go 1.25.9
 require (
 	github.com/envoyproxy/protoc-gen-validate v1.3.3
 	github.com/go-kratos/kratos/v2 v2.9.2
-	github.com/ikaiguang/go-srv-kit v0.3.50
+	github.com/ikaiguang/go-srv-kit v0.3.52
 	github.com/stretchr/testify v1.11.1
 	google.golang.org/genproto/googleapis/api v0.0.0-20260414002931-afd174a4e478
 	google.golang.org/grpc v1.80.0
